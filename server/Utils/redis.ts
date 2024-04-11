@@ -1,13 +1,15 @@
 import { Redis } from "ioredis";
-require('dotenv').config();
+require("dotenv").config();
 
-const redisClient = () =>{
-    if(process.env.REDIS_URL){
+const redisClient = () => {
+    if (process.env.REDIS_URL) {
         console.log(`Redis Connected`);
         return process.env.REDIS_URL;
- 
-    } throw new Error('Redis connected failed');
-  
-
+    }
+    throw new Error('Redis connection failed');
 };
- export const redis= new Redis(redisClient());
+
+// Initialize Redis client
+export const redis = new Redis(redisClient());
+
+// Now you can use the `redis` variable elsewhere in your code
