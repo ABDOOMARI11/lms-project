@@ -3,11 +3,20 @@ import { Request, Response, NextFunction } from "express";
 import userModel, { IUser } from "../models/user.model";
 import ErrorHandler from "../Utils/ErrorHandler";
 import { CatchAsyncError } from "../middleware/catchAsyncErrors";
-import jwt, { Secret } from "jsonwebtoken"; // Importation correcte de jsonwebtoken
-import ejs from "ejs";
-import path from "path";
+import jwt, { Secret, JwtPayload } from "jsonwebtoken"; // Importation correcte de jsonwebtoken
+// import ejs from "ejs";
+// import path from "path";
 import sendMail from "../Utils/sendMail";
-import { sendToken } from "../Utils/jwt";
+import cloudinary from "cloudinary";
+import {
+  accesTokenOptions,
+  refreshTokenOptions,
+  sendToken,
+} from "../Utils/jwt";
+import { redis } from "../Utils/redis";
+import { getUserById } from "../services/user.ser";
+import bcrypt from "bcryptjs";
+import { json } from "stream/consumers";
 
 // Créer une interface pour les données de registration
 interface IRegistrationBody {
@@ -152,8 +161,26 @@ export const loginUser = CatchAsyncError(
 export const logoutUser = CatchAsyncError(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      res.cookie("access_token", "", { maxAge: 1 });
-      res.cookie("refresh_token", "", { maxAge: 1 });
+      // Supprimer l'utilisateur du cache Redis
+      const access_token = req.cookies.access_token;
+      if (!access_token) {
+        throw new ErrorHandler("User is not Authenticated", 400);
+      }
+
+      const decoded = jwt.verify(
+        access_token,
+        process.env.ACCESS_TOKEN_SECRET as string
+      ) as JwtPayload;
+      if (!decoded || !decoded.id) {
+        throw new ErrorHandler("Access Token is Not valid", 400);
+      }
+
+      await redis.del(decoded.id); // Supprimer l'utilisateur du cache Redis
+
+      // Effacer les cookies d'authentification
+      res.clearCookie("access_token");
+      res.clearCookie("refresh_token");
+
       res.status(200).json({
         success: true,
         message: "logged out successfully",
@@ -163,3 +190,288 @@ export const logoutUser = CatchAsyncError(
     }
   }
 );
+//update acces token
+
+export const updateAccesToken = CatchAsyncError(
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const refresh_token = req.cookies.refresh_token as string;
+      const decoded = jwt.verify(
+        refresh_token,
+        process.env.REFRESH_TOKEN as string
+      ) as JwtPayload;
+
+      const message = "could not refresh token ";
+      if (!decoded) {
+        return next(new ErrorHandler(message, 400));
+      }
+      const session = await redis.get(decoded.id as string);
+      if (!session) {
+        return next(new ErrorHandler(message, 400));
+      }
+      const user = JSON.parse(session);
+      const accessToken = jwt.sign(
+        { id: user._id },
+        process.env.ACCES_TOKEN as string,
+        {
+          expiresIn: "5m",
+        }
+      );
+      const refreshToken = jwt.sign(
+        { id: user._id },
+        process.env.REFRESH_TOKEN as string,
+        {
+          expiresIn: "3d",
+        }
+      );
+      req.user = user;
+
+      res.cookie("access_token", accessToken, accesTokenOptions);
+      res.cookie("refresh_token", refreshToken, refreshTokenOptions);
+      res.status(200).json({
+        status: "success",
+        accessToken,
+      });
+    } catch (error: any) {
+      return next(new ErrorHandler(error.message, 400));
+    }
+  }
+);
+
+//get user info
+export const getUserInfo = CatchAsyncError(
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const userId = req.user?._id;
+      getUserById(userId, res, next);
+    } catch (error: any) {
+      return next(new ErrorHandler(error.message, 400));
+    }
+  }
+);
+
+interface ISocialAuthBody {
+  email: string;
+  name: string;
+  avatar?: string; // Avatar facultatif
+}
+
+
+
+
+export const socialAuth = CatchAsyncError(
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { email, name, avatar,password } = req.body;
+
+      if (!email || !name) {
+        throw new Error("Email and name are required.");
+      }
+
+      const userAvatar = avatar ? { public_id: "", url: avatar } : undefined;
+
+      // Créer un nouvel utilisateur avec le mot de passe haché
+      const newUser = await userModel.create({
+        email,
+        name,
+        password,
+        avatar: userAvatar,
+      });
+
+      // Envoyer le token avec le nouvel utilisateur créé
+      sendToken(newUser, 200, res);
+    } catch (error: any) {
+      return next(new ErrorHandler(error.message, 400));
+    }
+  }
+);
+
+
+
+interface IUpdateUserInfo {
+  name?: string | undefined;
+  email?: string | undefined;
+  password?: string | undefined;
+  oldPassword?: string | undefined;
+  newPassword?: string | undefined;
+}
+
+export const updateNameAndEmail = CatchAsyncError(
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const userId = req.user?._id; // Récupérer l'ID de l'utilisateur connecté depuis la demande
+
+      console.log("UserID:", userId); // Afficher la valeur de userId
+
+      // Récupérer les nouvelles données utilisateur à partir du corps de la demande
+      const { name, email }: IUpdateUserInfo = req.body;
+
+      console.log("New Name:", name); // Afficher la valeur de name
+      console.log("New Email:", email); // Afficher la valeur de email
+
+      // Vérifier s'il y a un ID utilisateur dans la demande
+      if (!userId) {
+        throw new ErrorHandler("User ID not found", 400);
+      }
+
+      // Mettre à jour les informations utilisateur si elles sont fournies dans la demande et non vides
+      const updateFields: any = {};
+      if (name !== undefined && name !== "") {
+        updateFields.name = name;
+      }
+      if (email !== undefined && email !== "") {
+        updateFields.email = email;
+      }
+
+      // Mettre à jour les informations de l'utilisateur dans la base de données MongoDB
+      await userModel.updateOne({ _id: userId }, { $set: updateFields });
+
+      // Mettre à jour les informations utilisateur dans Redis
+      const updatedUser = await userModel.findById(userId);
+      await redis.set(userId, JSON.stringify(updatedUser));
+
+      // Répondre avec un succès
+      res.status(200).json({
+        success: true,
+        message: "User information updated successfully",
+      });
+    } catch (error: any) {
+      console.error("Update Name and Email Error:", error.message);
+      console.error(error); // Afficher l'erreur complète pour un débogage supplémentaire
+
+      // Vérifier si l'erreur est liée à bcrypt.hash
+      if (error.message.includes("bcrypt.hash")) {
+        return next(new ErrorHandler("Password error", 400));
+      }
+
+      return next(new ErrorHandler(error.message, 400));
+    }
+  }
+);
+
+
+
+
+export const updatePassword = CatchAsyncError(
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const userId = req.user?._id; // Récupérer l'ID de l'utilisateur connecté depuis la demande
+
+      console.log("UserID:", userId);
+
+      // Récupérer les anciennes et nouvelles données utilisateur à partir du corps de la demande
+      const {
+        oldPassword,
+        newPassword,
+      }: { oldPassword: string; newPassword: string } = req.body;
+
+      console.log("Old Password Entered:", oldPassword);
+      console.log("New Password Entered:", newPassword);
+
+      // Vérifier s'il y a un ID utilisateur dans la demande
+      if (!userId) {
+        throw new ErrorHandler("User ID not found", 400);
+      }
+
+      // Recherche de l'utilisateur dans la base de données avant la mise à jour
+      const userBeforeUpdate = await userModel.findById(userId).select('+password');
+
+      // Vérifier si l'utilisateur existe dans la base de données
+      if (!userBeforeUpdate) {
+        throw new ErrorHandler("User not found", 404);
+      }
+
+      console.log("Password Stored in Database:", userBeforeUpdate.password);
+
+      // Comparer les mots de passe
+      if (oldPassword !== userBeforeUpdate.password) {
+        throw new ErrorHandler("Old password is incorrect", 400);
+      }
+
+      // Mettre à jour le mot de passe
+      userBeforeUpdate.password = newPassword;
+
+      // Enregistrer les modifications dans la base de données
+      await userBeforeUpdate.save();
+
+      // Mettre à jour les informations utilisateur dans Redis
+      await redis.set(userId, JSON.stringify(userBeforeUpdate));
+
+      // Répondre avec les informations utilisateur mises à jour
+      res.status(200).json({
+        success: true,
+        message: "Password updated successfully",
+      });
+    } catch (error: any) {
+      console.error("Update Password Error:", error.message);
+      return next(new ErrorHandler(error.message, 400));
+    }
+  }
+);
+
+// Interface pour les paramètres de mise à jour de l'avatar
+interface IUpdateProfile {
+ avatar:string;
+}
+
+
+export const updateProfilePicture = CatchAsyncError(
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+       const {avatar} = req.body;
+       const userId = req.user?._id;
+       const user = await userModel.findById(userId);
+
+
+       if (avatar && user) {
+        //if we have any avatar the cal this if  block
+        if (user?.avatar.public_id) {
+          //first delete the old image
+          await cloudinary.v2.uploader.destroy(user?.avatar?.public_id);
+          const myCloud = await cloudinary.v2.uploader.upload(avatar,{
+            folder:"avatars",
+            width: 150,
+           });
+           user.avatar = {
+            public_id: myCloud.public_id,
+            url: myCloud.url,
+           }
+  
+         }else{
+           const myCloud = await cloudinary.v2.uploader.upload(avatar,{
+            folder:"avatars",
+            width: 150,
+           });
+           user.avatar = {
+            public_id: myCloud.public_id,
+            url: myCloud.url,
+           }
+       }
+       }
+
+        await user?.save();
+        await redis.set(userId,JSON.stringify(user));
+
+        res.status(200).json({
+          success: true,
+          message: "Profile updated successfully",
+          user
+        });
+      
+    }catch (error: any) {
+      return next(new ErrorHandler(error.message, 400));
+    }
+
+  });
+
+
+
+
+
+
+
+
+
+
+
+

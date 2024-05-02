@@ -1,6 +1,5 @@
 require("dotenv").config();
 import mongoose, { Document, Model, Schema } from "mongoose";
-import bcrypt from "bcryptjs";
 import Jwt from "jsonwebtoken";
 
 const emailRegexPattern: RegExp = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -8,7 +7,7 @@ const emailRegexPattern: RegExp = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 export interface IUser extends Document {
   name: string;
   email: string;
-  password: string;
+  password: string; // Rendre le mot de passe facultatif
   avatar: {
     public_id: string;
     url: string;
@@ -16,10 +15,11 @@ export interface IUser extends Document {
   role: string;
   isVerified: boolean;
   courses: Array<{ courseId: string }>;
-  comparePassword: (password: string) => Promise<boolean>;
+  comparePassword: (enteredPassword: string) => Promise<boolean>; // Modifier la signature de la méthode
   SignAccesToken: () => string;
   SignRefreshToken: () => string;
 }
+
 const userSchema: Schema<IUser> = new mongoose.Schema(
   {
     name: {
@@ -29,23 +29,15 @@ const userSchema: Schema<IUser> = new mongoose.Schema(
     email: {
       type: String,
       required: [true, "Please enter your email"],
-      validate: {
-        validator: function (value: string) {
-          return emailRegexPattern.test(value);
-        },
-        message: "Please enter a valid email",
-      },
       unique: true,
     },
     password: {
       type: String,
-      required: [true, "Please enter your password"],
-      minlength: [6, "Password must be at least 6 characters"],
       select: false,
     },
     avatar: {
-      public_id: String,
-      url: String, // "Url" corrigé en "url"
+      public_id: { type: String, default: "" },
+      url: { type: String, default: "" },
     },
     role: {
       type: String,
@@ -63,33 +55,36 @@ const userSchema: Schema<IUser> = new mongoose.Schema(
   },
   { timestamps: true }
 );
-// Hash password before  saving
+
 
 userSchema.pre<IUser>("save", async function (next) {
-  if (this.isModified("password")) {
-    next();
+  if (!this.isModified("password")) {
+    return next();
   }
-  this.password = await bcrypt.hash(this.password, 10);
-  next();
+  try {
+    return next();
+  } catch (error:any) {
+    return next(error);
+  }
 });
 
 //sign acces token
-
 userSchema.methods.SignAccesToken = function () {
-  return Jwt.sign({ id: this._id }, process.env.ACCES_TOKEN || "");
+  return Jwt.sign({ id: this._id }, process.env.ACCES_TOKEN || "",{
+    expiresIn:"5m",
+  });
 };
 
 //sign refresh token
 userSchema.methods.SignRefreshToken = function () {
-  return Jwt.sign({ id: this._id }, process.env.REFRESH_TOKEN || "");
+  return Jwt.sign({ id: this._id }, process.env.REFRESH_TOKEN || "",{
+    expiresIn:"3d",
+  });
 };
 
-//compare password
-
-userSchema.methods.comparePassword = async function (
-  enteredPassword: string
-): Promise<boolean> {
-  return await bcrypt.compare(enteredPassword, this.password);
+userSchema.methods.comparePassword = function (enteredPassword: string) {
+  // Vous pouvez utiliser une comparaison simple
+  return enteredPassword === this.password;
 };
 
 const userModel: Model<IUser> = mongoose.model("User", userSchema);
