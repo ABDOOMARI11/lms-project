@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DAcademy - Nouvelle réponse à une question</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #2c738a;
+            color: #ffffff;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #3a96a3;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+        h2 {
+            color: #ffffff;
+            text-align: center;
+        }
+        p {
+            color: #ffffff;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .footer-email {
+            text-align: center;
+            margin-top: 30px;
+        }
+        .footer-email p {
+            font-size: 14px;
+            margin: 10px 0;
+        }
+        .footer-email a {
+            color: #ffffff;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <p>Bonjour : <%= userName %></p>
+        <h2>Nouvelle réponse à une question sur DAcademy</h2>
+        <p>L'équipe DAcademy a répondu à une question sur la vidéo :</p>
+        <p><%= courseTitle %></p>
+        <p>Veuillez se connecter  pour accder aux réponses!</p>
+        <p>Merci pour votre participation !</p>
+    </div>
+
+    <div class="footer-email">
+        <p>Si vous avez d'autres questions, n'hésitez pas à nous contacter à <a href="mailto:dacademy.sup1@gmail.com">dacademy.sup1@gmail.com</a>.</p>
+    </div>
+</body>
+</html>
