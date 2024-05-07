@@ -2,13 +2,14 @@ import { Request, Response, NextFunction } from "express";
 import { CatchAsyncError } from "../middleware/catchAsyncErrors";
 import ErrorHandler from "../Utils/ErrorHandler";
 import cloudinary from "cloudinary";
-import { createCourse } from "../services/course.ser";
+import { createCourse, getAllCoursesService } from "../services/course.ser";
 import CourseModel from "../models/course.model";
 import { redis } from "../Utils/redis";
 import mongoose from "mongoose";
 import ejs from "ejs";
 import path from "path";
 import sendMail from "../Utils/sendMail";
+import notificatModel from "../models/notification.model";
 
 // upload course
 export const uploadCourse = CatchAsyncError(
@@ -83,7 +84,9 @@ export const getSingleCourse = CatchAsyncError(
           "-courseData.videoUrl -courseData.suggestion -courseData.questions -courseData.links"
         );
 
-        await redis.set(courseId, JSON.stringify(course));
+
+
+        await redis.set(courseId, JSON.stringify(course),"EX",604800); // 7 days
 
         res.status(200).json({
           success: true,
@@ -179,6 +182,12 @@ export const addQuestion = CatchAsyncError(
       //add this question to our course content
       CourseContent.questions.push(newQuestion);
 
+      await notificatModel.create({
+        user: req.user?._id,
+        title: "new question received",
+        message: `you have a new question in ${CourseContent.title}`,
+      });
+
       //save the updated course
       await course?.save();
       res.status(200).json({
@@ -229,9 +238,12 @@ export const ajouterAnswers = CatchAsyncError(
       question.questionReplies.push(newAnswer);
       await course?.save();
 
-      if (req.user?._id === question.user.id) {
-        //create notif
-      }
+    
+        await notificatModel.create({
+          user: req.user?._id,
+          title: "new question reply  received",
+          message: `you have a new question reply in ${courseContent.title}`,
+        });      
       const data = {
         userName: question.user.name,
         courseTitle: courseContent.title,
@@ -258,3 +270,123 @@ export const ajouterAnswers = CatchAsyncError(
     }
   }
 );
+
+//add review to a course
+interface IReviewData {
+  review: string;
+  rating: number;
+  userId: string;
+}
+
+export const addReview = CatchAsyncError(
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const userCoursesList = req.user?.courses;
+      const courseId = req.params.id;
+
+      const courseExiste = userCoursesList?.some(
+        (course: any) => course._id.toString() === courseId.toString()
+      );
+      if (!courseExiste) {
+        return next(
+          new ErrorHandler("you're not eligibale to acces this course ", 404)
+        );
+      }
+      const course = await CourseModel.findById(courseId);
+      const { review, rating } = req.body as IReviewData;
+      const reviewData: any = {
+        user: req.user,
+        comment: review,
+        rating,
+      };
+      course?.reviews.push(reviewData);
+      let avg = 0;
+      course?.reviews.forEach((rev: any) => {
+        avg += rev.rating;
+      });
+
+      if (course) {
+        course.ratings = avg / course.reviews.length; // avarage of ratings
+      }
+      await course?.save();
+
+      //create notification
+
+      res.status(200).json({
+        success: true,
+        course,
+      });
+    } catch (error: any) {
+      return next(new ErrorHandler(error.message, 400));
+    }
+  }
+);
+
+interface IAddReviewReplyData {
+  comment: string;
+  courseId: string;
+  reviewId: string;
+}
+//add reply
+export const addReplyToReview = CatchAsyncError(
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { comment, courseId, reviewId } = req.body as IAddReviewReplyData;
+      const course = await CourseModel.findById(courseId);
+      if (!course) {
+        return next(new ErrorHandler("Course not found", 404));
+      }
+      const review = course?.reviews?.find(
+        (rev: any) => rev._id.toString() === reviewId
+      );
+      if (!review) {
+        return next(new ErrorHandler("Review not found", 404));
+      }
+      const replyData: any = {
+        user: req.user,
+        comment,
+      };
+
+      if (!review.commentReplies) {
+        review.commentReplies = [];
+      }
+      review.commentReplies?.push(replyData);
+
+      await course?.save();
+      res.status(200).json({
+        success: true,
+        course,
+      });
+    } catch (error: any) {
+      return next(new ErrorHandler(error.message, 400));
+    }
+  }
+);
+export const getAllLessouns = CatchAsyncError(async(req:Request,res:Response,next:NextFunction)=>{
+  try {
+    getAllCoursesService(res);
+    
+  } catch (error: any) {
+    return next(new ErrorHandler(error.message, 400));
+  }
+});
+
+// delete course ---only for admin
+
+export const  deleteCourse = CatchAsyncError(async(req:Request,res:Response,next:NextFunction)=>{
+  try {
+   const {id} = req.params;
+   const course = await CourseModel.findById(id);
+   if (!course) {
+     return next(new ErrorHandler("course not found", 404));
+   }
+ await course.deleteOne({id});
+ await redis.del(id);
+ res.status(200).json({
+   success:true,
+   message:"course deleted succesfully",
+ });
+  } catch (error: any) {
+   return next(new ErrorHandler(error.message, 400));
+ }
+ });

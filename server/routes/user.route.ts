@@ -9,7 +9,10 @@ import {
   getUserInfo,
   updateNameAndEmail, // Importer la fonction updateNameAndEmail depuis le contrôleur
   updatePassword,
-  updateProfilePicture
+  updateProfilePicture,
+  getAllUsersForAdmin,
+  updateUserRole,
+  deleteUser
    // Importer la fonction updatePassword depuis le contrôleur
 } from "../controllers/user.contoller"; // Assurez-vous que le chemin d'accès au contrôleur est correct
 import { isAuthenticated, authorizeRoles } from "../middleware/auth";
@@ -28,5 +31,8 @@ UserRouter.put("/update-name-email", isAuthenticated, updateNameAndEmail);
 // Route pour mettre à jour le mot de passe de l'utilisateur
 UserRouter.put("/update-password", isAuthenticated, updatePassword);
 UserRouter.put("/update-profile", isAuthenticated, updateProfilePicture);
+UserRouter.get("/all-users-admin",isAuthenticated,  authorizeRoles("admin"),getAllUsersForAdmin);
+UserRouter.put("/update-user-role",isAuthenticated,  authorizeRoles("admin"),updateUserRole);
+UserRouter.delete("/delete-user/:id",isAuthenticated,  authorizeRoles("admin"),deleteUser);
 
 export default UserRouter;

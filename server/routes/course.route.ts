@@ -2,9 +2,13 @@ import express from "express";
 import {
 
   addQuestion,
+  addReplyToReview,
+  addReview,
   ajouterAnswers,
+  deleteCourse,
   editCourse,
   getAllCourses,
+  getAllLessouns,
   getCourseByUser,
   getSingleCourse,
   uploadCourse,
@@ -31,5 +35,10 @@ CourseRouter.get("/get-all-courses", getAllCourses);
 CourseRouter.get("/get-course-content/:id",isAuthenticated,getCourseByUser);
 CourseRouter.put("/add-question",isAuthenticated,addQuestion);
 CourseRouter.put("/add-answer",isAuthenticated,ajouterAnswers);
+CourseRouter.put("/add-review/:id",isAuthenticated,addReview);
+CourseRouter.put("/add-reply-review",isAuthenticated,  authorizeRoles("admin"),addReplyToReview);
+CourseRouter.get("/all-courses-admin",isAuthenticated,  authorizeRoles("admin"),getAllLessouns);
+CourseRouter.delete("/delete-course/:id",isAuthenticated,  authorizeRoles("admin"),deleteCourse);
+
 
 export default CourseRouter;
