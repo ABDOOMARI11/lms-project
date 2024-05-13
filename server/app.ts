@@ -13,6 +13,7 @@ import notificationRouter from "./routes/notification.route";
 import analyticsRouter from "./routes/analytics.route";
 import layoutRouter from "./routes/layout.route";
 
+
 const bodyParser = require("body-parser");
 
 app.use(bodyParser.json({ limit: "100mb" }));
@@ -25,11 +26,11 @@ app.use(cookieParser());
 //cors => cross origin resource sharing
 
 app.use(
-cors({
-origin: process.env.ORIGIN,
-})
-);
-
+    cors({
+      origin: ["http://localhost:3000"],
+      credentials: true,
+    })
+  );
 app.use("/api/v1", UserRouter,CourseRouter,orderRouter,notificationRouter,analyticsRouter,layoutRouter);
 
 app.use(express.json());
