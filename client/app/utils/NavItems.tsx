@@ -40,7 +40,7 @@ const NavItems: React.FC<Props> = ({ activeItem, isMobile }) => {
                 <span
                   className={`${
                     activeItem === index
-                      ? "dark:text-[#37a39a] text-[crimson]"
+                      ? "text-orange-500" 
                       : "dark:text-white text-black"
                   }
                           text-[19px] px-6 font-Poppins font-[400]`}
@@ -65,7 +65,7 @@ const NavItems: React.FC<Props> = ({ activeItem, isMobile }) => {
                     <span
                       className={`${
                         activeItem === index
-                          ? "dark:text-[#37a39a] text-[crimson]"
+                          ? "text-orange-500 "
                           : "dark:text-white text-black"
                       } text-[19px] px-6 font-Poppins font-[400] block mb-10`} 
                     >

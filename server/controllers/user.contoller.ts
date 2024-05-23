@@ -14,10 +14,7 @@ import {
   sendToken,
 } from "../Utils/jwt";
 import { redis } from "../Utils/redis";
-import {
-  getAllUsers,
-  getUserById,
-} from "../services/user.ser";
+import { getAllUsers, getUserById } from "../services/user.ser";
 import bcrypt from "bcryptjs";
 import { json } from "stream/consumers";
 
@@ -210,7 +207,9 @@ export const updateAccesToken = CatchAsyncError(
       }
       const session = await redis.get(decoded.id as string);
       if (!session) {
-        return next(new ErrorHandler("please login to acces this resource", 400));
+        return next(
+          new ErrorHandler("please login to acces this resource", 400)
+        );
       }
       const user = JSON.parse(session);
       const accessToken = jwt.sign(
@@ -231,12 +230,9 @@ export const updateAccesToken = CatchAsyncError(
 
       res.cookie("access_token", accessToken, accesTokenOptions);
       res.cookie("refresh_token", refreshToken, refreshTokenOptions);
-      await redis.set(user._id,JSON.stringify(user),"EX",604800); // 7 days
+      await redis.set(user._id, JSON.stringify(user), "EX", 604800); // 7 days
 
-      res.status(200).json({
-        status: "success",
-        accessToken,
-      });
+      next();
     } catch (error: any) {
       return next(new ErrorHandler(error.message, 400));
     }
@@ -329,7 +325,6 @@ export const updateNameAndEmail = CatchAsyncError(
       // Mettre à jour les informations utilisateur dans Redis
       const updatedUser = await userModel.findById(userId);
       await redis.set(userId, JSON.stringify(updatedUser));
-
       // Répondre avec un succès
       res.status(200).json({
         success: true,
@@ -478,7 +473,7 @@ export const updateUserRole = CatchAsyncError(
       const user = await userModel.findById(id);
 
       if (!user) {
-        return next(new ErrorHandler('Utilisateur non trouvé', 404));
+        return next(new ErrorHandler("Utilisateur non trouvé", 404));
       }
 
       user.role = role;
@@ -496,20 +491,22 @@ export const updateUserRole = CatchAsyncError(
 
 // delete user ---only for admin
 
-export const  deleteUser = CatchAsyncError(async(req:Request,res:Response,next:NextFunction)=>{
- try {
-  const {id} = req.params;
-  const user = await userModel.findById(id);
-  if (!user) {
-    return next(new ErrorHandler("user not found", 404));
+export const deleteUser = CatchAsyncError(
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { id } = req.params;
+      const user = await userModel.findById(id);
+      if (!user) {
+        return next(new ErrorHandler("user not found", 404));
+      }
+      await user.deleteOne({ id });
+      await redis.del(id);
+      res.status(200).json({
+        success: true,
+        message: "user deleted succesfully",
+      });
+    } catch (error: any) {
+      return next(new ErrorHandler(error.message, 400));
+    }
   }
-await user.deleteOne({id});
-await redis.del(id);
-res.status(200).json({
-  success:true,
-  message:"user deleted succesfully",
-});
- } catch (error: any) {
-  return next(new ErrorHandler(error.message, 400));
-}
-});
+);

@@ -1,22 +1,26 @@
 "use client"
-import React, { FC } from "react";
+import React, { FC, useState } from "react";
 import Heading from "./utils/Heading";
-import Header from "./components/Header"
-import { useState } from "react";
-import Hero from "./components/Route/Hero"
+import Header from "./components/Header";
+import Hero from "./components/Route/Hero";
+import  Footer from "./components/Footer";
+import Courses from "./components/Route/Courses";
+import FAQ from "./components/FAQ/FAQ";
 
-interface Props { }
+interface Props {}
 
-const Page: FC<Props> = (propos) => {
+const Page: FC<Props> = () => {
   const [open, setOpen] = useState(false);
   const [activeItem, setActiveItem] = useState(0);
-  const [route,setRoute] = useState("Login")
+  const [route, setRoute] = useState("Login");
+
   return (
-    <div>
+    <>
+    <div className="dark:bg-slate-700">
       <Heading
         title="DAcademy"
-        description="DAcademy is the first moroccan academy to learn and  get help from teachers"
-        keywords="Diagnostic,Cars,Mercedes,OFPPT"
+        description="DAcademy is the first moroccan academy to learn and get help from teachers"
+        keywords="Diagnostic, Cars, Mercedes, OFPPT"
       />
       <Header
         open={open}
@@ -25,9 +29,14 @@ const Page: FC<Props> = (propos) => {
         setRoute={setRoute}
         route={route}
       />
-      <Hero/>
-    </div>
-  )
+      <Hero />
+      <Courses/>
+      <FAQ />
+
+      <Footer />
+      </div>
+    </>
+  );
 };
 
 export default Page;

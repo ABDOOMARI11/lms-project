@@ -102,6 +102,7 @@ const courseSchema = new Schema<ICourse>({
   thumbnail: {
     public_id: {
       type: String,
+      required: false,
     },
     url: {
       type: String,

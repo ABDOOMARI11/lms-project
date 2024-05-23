@@ -12,13 +12,14 @@ import toast from 'react-hot-toast'
 type Props = {
     setRoute: (route: string) => void;
     setOpen: (open: boolean) => void;
-
+    refetch: () => void;
 }
+
 const schema = Yup.object().shape({
     email: Yup.string().email("Invalid email").required("Please enter you email"),
     password: Yup.string().required("Please entre your password").min(6),
 });
-const Login: FC<Props> = ({ setRoute,setOpen }) => {
+const Login: FC<Props> = ({ setRoute,setOpen,refetch }) => {
 
     
     const [show, setShow] = useState(false);
@@ -47,22 +48,24 @@ const Login: FC<Props> = ({ setRoute,setOpen }) => {
     });
     useEffect(() => {
         if (isSuccess) {
-          toast.success("Login Successfully!");
-          setOpen(false);
+            toast.success("Login Successfully!");
+            setOpen(false);
+            window.location.reload();
         }
         if (error) {
-          if ("data" in error) {
-            const errorData = error as any;
-            toast.error(errorData.data.message);
-          }
+            if ("data" in error) {
+                const errorData = error as any;
+                toast.error(errorData.data.message);
+            }
         }
-      }, [isSuccess, error]);
+    }, [isSuccess, error]);
+    
     
     const { errors, touched, values, handleChange, handleSubmit } = formik;
 
     return (
-        <div className='w-full'>
-    <h1 className={`${styles.title} flex items-center justify-center`}>
+        <div className='w-full dark:bg-slate-700'>
+    <h1 className={`${styles.title} flex items-center justify-center  dark:bg-slate-700`}>
         login with{' '}
         <img
           src={theme === 'light' ? logoLight : logoDark}

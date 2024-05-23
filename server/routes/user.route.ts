@@ -24,15 +24,15 @@ UserRouter.post("/activate-user", activateUser);
 UserRouter.post("/login", loginUser);
 UserRouter.get("/logout", isAuthenticated, logoutUser);
 UserRouter.get("/refresh", updateAccesToken);
-UserRouter.get("/me", isAuthenticated, getUserInfo);
+UserRouter.get("/me",updateAccesToken, isAuthenticated, getUserInfo);
 UserRouter.post("/social-auth", socialAuth);
 // Route pour mettre à jour le nom et l'email de l'utilisateur
-UserRouter.put("/update-name-email", isAuthenticated, updateNameAndEmail);
+UserRouter.put("/update-name-email", updateAccesToken,isAuthenticated, updateNameAndEmail);
 // Route pour mettre à jour le mot de passe de l'utilisateur
-UserRouter.put("/update-password", isAuthenticated, updatePassword);
-UserRouter.put("/update-profile", isAuthenticated, updateProfilePicture);
-UserRouter.get("/all-users-admin",isAuthenticated,  authorizeRoles("admin"),getAllUsersForAdmin);
-UserRouter.put("/update-user-role",isAuthenticated,  authorizeRoles("admin"),updateUserRole);
-UserRouter.delete("/delete-user/:id",isAuthenticated,  authorizeRoles("admin"),deleteUser);
+UserRouter.put("/update-password", updateAccesToken,isAuthenticated, updatePassword);
+UserRouter.put("/update-profile", updateAccesToken,isAuthenticated, updateProfilePicture);
+UserRouter.get("/get-users",updateAccesToken,isAuthenticated,  authorizeRoles("admin"),getAllUsersForAdmin);
+UserRouter.put("/update-user",updateAccesToken,isAuthenticated,  authorizeRoles("admin"),updateUserRole);
+UserRouter.delete("/delete-user/:id",updateAccesToken,isAuthenticated,  authorizeRoles("admin"),deleteUser);
 
 export default UserRouter;

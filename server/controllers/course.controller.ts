@@ -10,7 +10,8 @@ import ejs from "ejs";
 import path from "path";
 import sendMail from "../Utils/sendMail";
 import notificatModel from "../models/notification.model";
-
+import axios from "axios";
+import { google } from 'googleapis';
 // upload course
 export const uploadCourse = CatchAsyncError(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -22,8 +23,7 @@ export const uploadCourse = CatchAsyncError(
           folder: "courses",
         });
         data.thumbnail = {
-          public_id: myCloud.public_id,
-          url: myCloud.secure_url,
+           url: myCloud.secure_url,
         };
       }
       createCourse(data, res, next);
@@ -41,7 +41,9 @@ export const editCourse = async (
   try {
     const data = req.body;
     const thumbnail = data.thumbnail;
-    if (thumbnail) {
+
+    // Only attempt to destroy and upload thumbnail if it contains a public_id
+    if (thumbnail && thumbnail.public_id) {
       await cloudinary.v2.uploader.destroy(thumbnail.public_id);
       const myCloud = await cloudinary.v2.uploader.upload(thumbnail, {
         folder: "courses",
@@ -51,21 +53,24 @@ export const editCourse = async (
         url: myCloud.secure_url,
       };
     }
+
     const courseId = req.params.id;
     const course = await CourseModel.findByIdAndUpdate(
       courseId,
       { $set: data },
       { new: true }
     );
+
     res.status(201).json({
-      succes: true,
-      message: "course updated succesfully",
+      success: true,
+      message: "Course updated successfully",
       course,
     });
   } catch (error: any) {
     return next(new ErrorHandler(error.message, 400));
   }
 };
+
 //get single course ------------------ without purchasing
 export const getSingleCourse = CatchAsyncError(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -100,9 +105,19 @@ export const getSingleCourse = CatchAsyncError(
 );
 //get all courses ------------------ without purchasing
 
+
+// Supprimer le cache avant d'appeler getAllCourses
+const deleteAllCoursesCache = async () => {
+  await redis.del("allCourses");
+};
+
+// Obtenez tous les cours sans achat
 export const getAllCourses = CatchAsyncError(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
+      // Supprimer le cache avant d'appeler getAllCourses
+      await deleteAllCoursesCache();
+      
       const isCacheExiste = await redis.get("allCourses");
 
       if (isCacheExiste) {
@@ -121,6 +136,17 @@ export const getAllCourses = CatchAsyncError(
           courses,
         });
       }
+    } catch (error: any) {
+      return next(new ErrorHandler(error.message, 400));
+    }
+  }
+);
+
+
+export const getAdminAllCourses = CatchAsyncError(
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      getAllCoursesService(res);
     } catch (error: any) {
       return next(new ErrorHandler(error.message, 400));
     }
@@ -390,3 +416,49 @@ export const  deleteCourse = CatchAsyncError(async(req:Request,res:Response,next
    return next(new ErrorHandler(error.message, 400));
  }
  });
+
+
+ // generate video url
+export const generateVideoUrl = CatchAsyncError(
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { videoId } = req.body;
+      const response = await axios.post(
+        `https://dev.vdocipher.com/api/videos/${videoId}/otp`,
+        { ttl: 300 },
+        {
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            Authorization: `Apisecret ${process.env.VDOCIPHER_API_SECRET}`,
+          },
+        }
+      );
+      res.json(response.data);
+    } catch (error: any) {
+      return next(new ErrorHandler(error.message, 400));
+    }
+  }
+);
+
+export const getVideoUrl = CatchAsyncError(
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { videoId } = req.body;
+      // Assuming you have a method to get video info from the database
+      const video = await getVideoFromDatabase(videoId);
+      if (!video) {
+        return next(new ErrorHandler("Video not found", 404));
+      }
+      res.json({ videoUrl: video.url });
+    } catch (error: any) {
+      return next(new ErrorHandler(error.message, 400));
+    }
+  }
+);
+// Example function to get video URL from the database
+const getVideoFromDatabase = async (videoId: string) => {
+  // Your logic to get video URL from the database
+  // Return an object containing the video URL
+  return { url: 'YOUTUBE_VIDEO_ID' };
+};
