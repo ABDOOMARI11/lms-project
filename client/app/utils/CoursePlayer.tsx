@@ -1,28 +1,26 @@
 import React, { FC, useEffect, useState } from "react";
 
 type Props = {
-  videoUrl: string; // Modification : changer videoId en videoUrl
+  videoUrl: string; 
 };
 
 const CoursePlayer: FC<Props> = ({ videoUrl }) => {
-  const [videoId, setVideoId] = useState<string>(""); // Nouvel état pour stocker l'identifiant de la vidéo
+  const [videoId, setVideoId] = useState<string>(""); 
 
   useEffect(() => {
-    // Extraire l'identifiant de la vidéo de l'URL
     const getVideoIdFromUrl = (url: string) => {
       const videoIdRegex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
       const match = url.match(videoIdRegex);
       return match ? match[1] : "";
     };
 
-    // Récupérer l'identifiant de la vidéo à partir de l'URL
     const id = getVideoIdFromUrl(videoUrl);
     setVideoId(id);
   }, [videoUrl]);
 
   return (
-    <div style={{ position: "relative", paddingTop: "56.25%", overflow: "hidden" }}>
-      {videoId && ( // Utiliser videoId à la place de videoUrl pour l'URL de l'iframe
+    <div style={{ position: "relative", paddingTop: "56.25%", overflow: "hidden" }} >
+      {videoId && ( 
         <iframe
           src={`https://www.youtube.com/embed/${videoId}`}
           style={{
@@ -33,6 +31,7 @@ const CoursePlayer: FC<Props> = ({ videoUrl }) => {
             height: "100%",
             border: 0,
           }}
+          className="border-orange-500"
           allowFullScreen
         ></iframe>
       )}

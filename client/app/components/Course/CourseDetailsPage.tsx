@@ -9,7 +9,7 @@ import {
   useCreatePaymentIntentMutation,
   useGetStripePublishablekeyQuery,
 } from "@/redux/features/orders/ordersApi";
-// import { loadStripe } from "@stripe/stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
 import { useLoadUserQuery } from "@/redux/features/api/apiSlice";
 
 type Props = {
@@ -27,16 +27,16 @@ const CourseDetailsPage = ({ id }: Props) => {
   const [stripePromise, setStripePromise] = useState<any>(null);
   const [clientSecret, setClientSecret] = useState("");
 
-  // useEffect(() => {
-  //   if (config) {
-  //     const publishablekey = config?.publishablekey;
-  //     setStripePromise(loadStripe(publishablekey));
-  //   }
-  //   if (data && userData?.user) {
-  //     const amount = Math.round(data.course.price * 100);
-  //     createPaymentIntent(amount);
-  //   }
-  // }, [config, data, userData]);
+  useEffect(() => {
+    if (config) {
+      const publishablekey = config?.publishablekey;
+      setStripePromise(loadStripe(publishablekey));
+    }
+    if (data && userData?.user) {
+      const amount = Math.round(data.course.price * 100);
+      createPaymentIntent(amount);
+    }
+  }, [config, data, userData]);
 
   useEffect(() => {
     if (paymentIntentData) {
@@ -51,7 +51,7 @@ const CourseDetailsPage = ({ id }: Props) => {
       ) : (
         <div>
           <Heading
-            title={data.course.name + " - ELearning"}
+            title={data.course.name + " - DAcademy"}
             description={
               "ELearning is a programming community which is developed by shahriar sajeeb for helping programmers"
             }
@@ -64,6 +64,7 @@ const CourseDetailsPage = ({ id }: Props) => {
             setOpen={setOpen}
             activeItem={1}
           />
+          <div className="dark:bg-slate-700">
           {stripePromise && (
             <CourseDetails
               data={data.course}
@@ -73,6 +74,8 @@ const CourseDetailsPage = ({ id }: Props) => {
               setOpen={setOpen}
             />
           )}
+            </div>
+         
           <Footer />
         </div>
       )}

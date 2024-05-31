@@ -4,8 +4,6 @@ import { toast } from "react-hot-toast";
 import { AiOutlineDelete, AiOutlinePlusCircle } from "react-icons/ai";
 import { BsLink45Deg, BsPencil } from "react-icons/bs";
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";
-import ReactPlayer from "react-player";
-
 type Props = {
   active: number;
   setActive: (active: number) => void;
@@ -13,7 +11,6 @@ type Props = {
   setCourseContentData: (courseContentData: any) => void;
   handleSubmit: any;
 };
-
 const CourseContent: FC<Props> = ({
   courseContentData,
   setCourseContentData,
@@ -24,31 +21,25 @@ const CourseContent: FC<Props> = ({
   const [isCollapsed, setIsCollapsed] = useState(
     Array(courseContentData.length).fill(false)
   );
-
   const [activeSection, setActiveSection] = useState(1);
-
   const handleSubmit = (e: any) => {
     e.preventDefault();
   };
-
   const handleCollapseToggle = (index: number) => {
     const updatedCollapsed = [...isCollapsed];
     updatedCollapsed[index] = !updatedCollapsed[index];
     setIsCollapsed(updatedCollapsed);
   };
-
   const handleRemoveLink = (index: number, linkIndex: number) => {
     const updatedData = [...courseContentData];
     updatedData[index].links.splice(linkIndex, 1);
     setCourseContentData(updatedData);
   };
-
   const handleAddLink = (index: number) => {
     const updatedData = [...courseContentData];
     updatedData[index].links.push({ title: "", url: "" });
     setCourseContentData(updatedData);
   };
-
   const newContentHandler = (item: any) => {
     if (
       item.title === "" ||
@@ -66,7 +57,6 @@ const CourseContent: FC<Props> = ({
         const lastVideoSection =
           courseContentData[courseContentData.length - 1].videoSection;
 
-        // use the last videoSection if available, else use user input
         if (lastVideoSection) {
           newVideoSection = lastVideoSection;
         }
@@ -83,7 +73,6 @@ const CourseContent: FC<Props> = ({
       setCourseContentData([...courseContentData, newContent]);
     }
   };
-
   const addNewSection = () => {
     if (
       courseContentData[courseContentData.length - 1].title === "" ||
@@ -125,7 +114,6 @@ const CourseContent: FC<Props> = ({
       handleCourseSubmit();
     }
   };
-
   return (
     <div className="w-[80%] m-auto mt-24 p-3">
       <form onSubmit={handleSubmit}>
@@ -133,10 +121,9 @@ const CourseContent: FC<Props> = ({
           const showSectionInput =
             index === 0 ||
             item.videoSection !== courseContentData[index - 1].videoSection;
-
           return (
             <div
-              className={`w-full bg-[#cdc8c817] p-4 ${
+              className={`w-full  bg-transparent p-4 ${
                 showSectionInput ? "mt-10" : "mb-0"
               }`}
               key={index}
@@ -170,7 +157,6 @@ const CourseContent: FC<Props> = ({
                   <div></div>
                 )}
 
-                {/* arrow button for collapsed video content */}
                 <div className="flex items-center">
                   <AiOutlineDelete
                     className={`dark:text-white text-[20px] mr-2 text-black ${
@@ -304,7 +290,6 @@ const CourseContent: FC<Props> = ({
                     </div>
                   ))}
                   <br />
-                  {/* add link button */}
                   <div className="inline-block mb-4">
                     <p
                       className="flex items-center text-[18px] dark:text-white text-black cursor-pointer"
@@ -316,7 +301,6 @@ const CourseContent: FC<Props> = ({
                 </>
               )}
               <br />
-              {/* add new content */}
               {index === courseContentData.length - 1 && (
                 <div>
                   <p
@@ -359,6 +343,5 @@ const CourseContent: FC<Props> = ({
     </div>
   );
 };
-
 export default CourseContent;
 

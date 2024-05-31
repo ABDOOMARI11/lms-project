@@ -6,12 +6,12 @@ import { redirect } from "next/navigation";
 import React, { useEffect } from "react";
 
 type Props = {
-    params:any;
+  params: any;
 }
 
-const Page = ({params}: Props) => {
-    const id = params.id;
-  const { isLoading, error, data,refetch } = useLoadUserQuery(undefined, {});
+const Page = ({ params }: Props) => {
+  const id = params.id;
+  const { isLoading, error, data, refetch } = useLoadUserQuery(undefined, {});
 
   useEffect(() => {
     if (data) {
@@ -25,20 +25,20 @@ const Page = ({params}: Props) => {
     if (error) {
       redirect("/");
     }
-  }, [data,error]);
+  }, [data, error]);
 
   return (
-   <>
-   {
-    isLoading ? (
-        <Loader />
-    ) : (
-        <div>
-          <CourseContent id={id} user={data.user} />
-        </div>
-    )
-   }
-   </>
+    <>
+      {
+        isLoading ? (
+          <Loader />
+        ) : (
+          <div className="dark:bg-slate-700">
+            <CourseContent id={id} user={data.user} />
+          </div>
+        )
+      }
+    </>
   )
 }
 

@@ -1,4 +1,4 @@
-import React, { FC, useState } from "react";
+  import React, { FC, useState } from "react";
 import { BsChevronDown, BsChevronUp } from "react-icons/bs";
 import { MdOutlineOndemandVideo } from "react-icons/md";
 
@@ -87,7 +87,7 @@ const CourseContentList: FC<Props> = (props) => {
                   return (
                     <div
                       className={`w-full ${
-                        videoIndex === props.activeVideo ? "bg-slate-800" : ""
+                        videoIndex === props.activeVideo ? " dark:bg-slate-800" : ""
                       } cursor-pointer transition-all p-2`}
                       key={item._id}
                       onClick={() => props.isDemo ? null : props?.setActiveVideo(videoIndex)}

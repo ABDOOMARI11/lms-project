@@ -13,7 +13,7 @@ const Page = (props: Props) => {
   const [route, setRoute] = useState("Login");
 
   return (
-    <div>
+    <div className="dark:bg-slate-700">
       <Heading
         title="About us - DAcademy"
         description="DAcademy is the first moroccan academy to learn and get help from teachers"
@@ -28,6 +28,9 @@ const Page = (props: Props) => {
         route={route}
       />
       <About />
+      <br />
+      <br />
+      <br />
       <Footer />
     </div>
   );

@@ -1,4 +1,4 @@
-'use client'
+"use client"
 import React from "react";
 import CourseDetailsPage from "../../components/Course/CourseDetailsPage";
 

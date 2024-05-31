@@ -108,26 +108,26 @@ const Header: FC<Props> = ({ activeItem, setOpen, route, open, setRoute }) => {
                 />
                 <ThemeSwitcher />
                 {userData?.user ? (
-  <div className="flex items-center space-x-2">
-    <p className={`${styles.label}`}>{userData.user.name}</p>
-    <Link href="/profile">
-      <Image
-        src={userData.user.avatar.url ? userData.user.avatar.url : avatar}
-        alt="no photo"
-        width={30}
-        height={30}
-        className="w-[30px] h-[30px] rounded-full cursor-pointer"
-        style={{ border: activeItem === 5 ? "2px solid #37a39a" : "none" }}
-      />
-    </Link>
-  </div>
-) : (
-  <HiOutlineUserCircle
-    size={25}
-    className="hidden 800px:block cursor-pointer dark:text-white text-black"
-    onClick={() => setOpen(true)}
-  />
-)}
+                  <div className="flex items-center space-x-2">
+                    <p className={`${styles.label}`}>{userData.user.name}</p>
+                    <Link href="/profile">
+                      <Image
+                        src={userData.user.avatar.url ? userData.user.avatar.url : avatar}
+                        alt="no photo"
+                        width={30}
+                        height={30}
+                        className="w-[30px] h-[30px] rounded-full cursor-pointer"
+                        style={{ border: activeItem === 5 ? "2px solid #37a39a" : "none" }}
+                      />
+                    </Link>
+                  </div>
+                ) : (
+                  <HiOutlineUserCircle
+                    size={25}
+                    className="hidden 800px:block cursor-pointer dark:text-white text-black"
+                    onClick={() => setOpen(true)}
+                  />
+                )}
 
 
                 {/* only for mobile */}
@@ -155,25 +155,6 @@ const Header: FC<Props> = ({ activeItem, setOpen, route, open, setRoute }) => {
                   activeItem={activeItem}
                   isMobile={true} // Pass isMobile as true for mobile sidebar
                 />
-                {userData?.user ? (
-                  <Link href={"/profile"}>
-                    <Image
-                      src={avatar}
-                      alt=""
-                      width={30}
-                      height={30}
-                      className="w-[30px] h-[30px] rounded-full ml-[20px] cursor-pointer"
-                      style={{ border: activeItem === 5 ? "2px solid #37a39a" : "none" }}
-                    />
-                  </Link>
-                  
-                ) : (
-                  <HiOutlineUserCircle
-                    size={25}
-                    className="hidden 800px:block cursor-pointer dark:text-white text-black"
-                    onClick={() => setOpen(true)}
-                  />
-                )}
                 <br />
                 <br />
                 <p className='text-[16px] px-2 pl-5 text-black dark:text-white'>

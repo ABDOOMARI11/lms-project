@@ -77,16 +77,18 @@ const EditFaq = (props: Props) => {
   };
 
   const handleEdit = async () => {
-    if (
-      !areQuestionsUnchanged(data.layout.FAQ, questions) &&
-      !isAnyQuestionEmpty(questions)
-    ) {
+    try {
       await editLayout({
         type: "FAQ",
         FAQ: questions,
       });
+      window.location.reload();
+    } catch (error) {
+      console.error("Error updating FAQ:", error);
     }
   };
+  
+  
 
   return (
    <>
@@ -97,7 +99,7 @@ const EditFaq = (props: Props) => {
         <div className="w-[90%] 800px:w-[80%] m-auto mt-[120px]">
         <div className="mt-12">
           <dl className="space-y-8">
-            {questions?.map((q: any) => (
+            {questions.map((q: any) => (
               <div
                 key={q._id}
                 className={`${

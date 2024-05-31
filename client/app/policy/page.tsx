@@ -13,11 +13,11 @@ const Page = (props: Props) => {
   const [route, setRoute] = useState("Login");
 
   return (
-    <div>
+    <div className="dark:bg-slate-700">
       <Heading
-        title="Policy - Elearning"
-        description="Elearning is a learning management system for helping programmers."
-        keywords="programming,mern"
+        title="Policy - DAcademy"
+        description="DAcademy is the first moroccan academy to learn and get help from teachers"
+        keywords="Diagnostic, Cars, Mercedes, OFPPT"
       />
       <Header
         open={open}
@@ -27,6 +27,8 @@ const Page = (props: Props) => {
         route={route}
       />
       <Policy />
+      <br />
+      <br />
       <Footer />
     </div>
   );

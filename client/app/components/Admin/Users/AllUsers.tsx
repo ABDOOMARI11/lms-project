@@ -18,20 +18,15 @@ type Props = {
 };
 
 const AllCourses: FC<Props> = ({ isTeam }) => {
-  const { theme, setTheme } = useTheme();
+  const { theme } = useTheme();
   const [active, setActive] = useState(false);
   const [email, setEmail] = useState("");
   const [role, setRole] = useState("admin");
   const [open, setOpen] = useState(false);
   const [userId, setUserId] = useState("");
-  const [updateUserRole, { error: updateError, isSuccess }] =
-    useUpdateUserRoleMutation();
-  const { isLoading, data, refetch } = useGetAllUsersQuery(
-    {},
-    { refetchOnMountOrArgChange: true }
-  );
-  const [deleteUser, { isSuccess: deleteSuccess, error: deleteError }] =
-    useDeleteUserMutation({});
+  const [updateUserRole, { error: updateError, isSuccess }] = useUpdateUserRoleMutation();
+  const { isLoading, data } = useGetAllUsersQuery({}, { refetchOnMountOrArgChange: true });
+  const [deleteUser, { isSuccess: deleteSuccess, error: deleteError }] = useDeleteUserMutation({});
 
   useEffect(() => {
     if (updateError) {
@@ -44,12 +39,12 @@ const AllCourses: FC<Props> = ({ isTeam }) => {
     if (isSuccess) {
       toast.success("User role updated successfully");
       setActive(false);
-      window.location.reload();  // Reload the page after successful update
+      window.location.reload();  
     }
     if (deleteSuccess) {
       toast.success("Delete user successfully!");
       setOpen(false);
-      window.location.reload();  // Reload the page after successful delete
+      window.location.reload();  
     }
     if (deleteError) {
       if ("data" in deleteError) {
@@ -67,72 +62,49 @@ const AllCourses: FC<Props> = ({ isTeam }) => {
     { field: "courses", headerName: "Purchased Courses", flex: 0.5 },
     { field: "created_at", headerName: "Joined At", flex: 0.5 },
     {
-      field: " ",
+      field: "delete",
       headerName: "Delete",
       flex: 0.2,
-      renderCell: (params: any) => {
-        return (
-          <>
-            <Button
-              onClick={() => {
-                setOpen(!open);
-                setUserId(params.row.id);
-              }}
-            >
-              <AiOutlineDelete
-                className="dark:text-white text-black"
-                size={20}
-              />
-            </Button>
-          </>
-        );
-      },
+      renderCell: (params: any) => (
+        <Button
+          onClick={() => {
+            setOpen(true);
+            setUserId(params.row.id);
+          }}
+        >
+          <AiOutlineDelete className="dark:text-white text-black" size={20} />
+        </Button>
+      ),
     },
-    {
-      field: "  ",
-      headerName: "Email",
-      flex: 0.2,
-      renderCell: (params: any) => {
-        return (
-          <>
-            <a href={`mailto:${params.row.email}`}>
-              <AiOutlineMail className="dark:text-white text-black" size={20} />
-            </a>
-          </>
-        );
-      },
-    },
+   
   ];
 
   const rows: any = [];
 
   if (isTeam) {
-    const newData =
-      data && data.users.filter((item: any) => item.role === "admin");
+    const newData = data?.users.filter((item: any) => item.role === "admin");
 
-    newData &&
-      newData.forEach((item: any) => {
-        rows.push({
-          id: item._id,
-          name: item.name,
-          email: item.email,
-          role: item.role,
-          courses: item.courses.length,
-          created_at: format(item.createdAt),
-        });
+    newData?.forEach((item: any) => {
+      rows.push({
+        id: item._id,
+        name: item.name,
+        email: item.email,
+        role: item.role,
+        courses: item.courses.length,
+        created_at: format(item.createdAt),
       });
+    });
   } else {
-    data &&
-      data.users.forEach((item: any) => {
-        rows.push({
-          id: item._id,
-          name: item.name,
-          email: item.email,
-          role: item.role,
-          courses: item.courses.length,
-          created_at: format(item.createdAt),
-        });
+    data?.users.forEach((item: any) => {
+      rows.push({
+        id: item._id,
+        name: item.name,
+        email: item.email,
+        role: item.role,
+        courses: item.courses.length,
+        created_at: format(item.createdAt),
       });
+    });
   }
 
   const handleSubmit = async () => {
@@ -140,12 +112,11 @@ const AllCourses: FC<Props> = ({ isTeam }) => {
   };
 
   const handleDelete = async () => {
-    const id = userId;
-    await deleteUser(id);
+    await deleteUser(userId);
   };
 
   return (
-    <div className="mt-[120px]">
+    <div className="mt-[120px] dark:bg-slate-700">
       {isLoading ? (
         <Loader />
       ) : (
@@ -154,7 +125,7 @@ const AllCourses: FC<Props> = ({ isTeam }) => {
             <div className="w-full flex justify-end">
               <div
                 className={`${styles.button} !w-[200px] !rounded-[10px] dark:bg-[#57c7a3] !h-[35px] dark:border dark:border-[#ffffff6c]`}
-                onClick={() => setActive(!active)}
+                onClick={() => setActive(true)}
               >
                 Add New Member
               </div>
@@ -176,10 +147,7 @@ const AllCourses: FC<Props> = ({ isTeam }) => {
               },
               "& .MuiDataGrid-row": {
                 color: theme === "dark" ? "#ffff" : "#000",
-                borderBottom:
-                  theme === "dark"
-                    ? "1px solid #ffffff30!important"
-                    : "1px solid #ff7f00!important",
+                borderBottom: theme === "dark" ? "1px solid #ffffff30!important" : "1px solid #ff7f00!important",
               },
               "& .MuiTablePagination-root": {
                 color: theme === "dark" ? "#ff7f00" : "#000",
@@ -204,8 +172,7 @@ const AllCourses: FC<Props> = ({ isTeam }) => {
                 backgroundColor: theme === "dark" ? "#3e4396" : "#A4A9FC",
               },
               "& .MuiCheckbox-root": {
-                color:
-                  theme === "dark" ? `#b7ebde !important` : `#000 !important`,
+                color: theme === "dark" ? `#b7ebde !important` : `#000 !important`,
               },
               "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
                 color: `#fff !important`,
@@ -217,7 +184,7 @@ const AllCourses: FC<Props> = ({ isTeam }) => {
           {active && (
             <Modal
               open={active}
-              onClose={() => setActive(!active)}
+              onClose={() => setActive(false)}
               aria-labelledby="modal-modal-title"
               aria-describedby="modal-modal-description"
             >
@@ -234,7 +201,7 @@ const AllCourses: FC<Props> = ({ isTeam }) => {
                   <select
                     name=""
                     id=""
-                    className={`${styles.input} !mt-6`}
+                    className={`${styles.input}  dark:text-white text-black !mt-6`}
                     onChange={(e: any) => setRole(e.target.value)}
                   >
                     <option value="admin">Admin</option>
@@ -255,7 +222,7 @@ const AllCourses: FC<Props> = ({ isTeam }) => {
           {open && (
             <Modal
               open={open}
-              onClose={() => setOpen(!open)}
+              onClose={() => setOpen(false)}
               aria-labelledby="modal-modal-title"
               aria-describedby="modal-modal-description"
             >
@@ -266,7 +233,7 @@ const AllCourses: FC<Props> = ({ isTeam }) => {
                 <div className="flex w-full items-center justify-between mb-6 mt-4">
                   <div
                     className={`${styles.button} !w-[120px] h-[30px] bg-[#57c7a3]`}
-                    onClick={() => setOpen(!open)}
+                    onClick={() => setOpen(false)}
                   >
                     Cancel
                   </div>

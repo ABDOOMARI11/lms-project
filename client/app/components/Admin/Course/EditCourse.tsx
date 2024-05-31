@@ -92,16 +92,13 @@ const EditCourse: FC<Props> = ({ id }) => {
   const [courseData, setCourseData] = useState({});
 
   const handleSubmit = async () => {
-    // Format benefits array
     const formattedBenefits = benefits.map((benefit) => ({
       title: benefit.title,
     }));
-    // Format prerequisites array
     const formattedPrerequisites = prerequisites.map((prerequisite) => ({
       title: prerequisite.title,
     }));
 
-    // Format course content array
     const formattedCourseContentData = courseContentData.map(
       (courseContent) => ({
         videoUrl: courseContent.videoUrl,
@@ -117,7 +114,6 @@ const EditCourse: FC<Props> = ({ id }) => {
       })
     );
 
-    // Prepare our data object
     const data = {
       name: courseInfo.name,
       description: courseInfo.description,
@@ -133,7 +129,6 @@ const EditCourse: FC<Props> = ({ id }) => {
       courseData: formattedCourseContentData,
     };
 
-    // Remove public_id from thumbnail if it's not present
     if (!data.thumbnail.public_id) {
       delete data.thumbnail.public_id;
     }
@@ -148,7 +143,7 @@ const EditCourse: FC<Props> = ({ id }) => {
   };
 
   return (
-    <div className="w-full flex min-h-screen">
+    <div className="w-full flex min-h-screen dark:bg-slate-700">
       <div className="w-[80%]">
         {active === 0 && (
           <CourseInformation
@@ -158,7 +153,6 @@ const EditCourse: FC<Props> = ({ id }) => {
             setActive={setActive}
           />
         )}
-
         {active === 1 && (
           <CourseData
             benefits={benefits}
@@ -169,7 +163,6 @@ const EditCourse: FC<Props> = ({ id }) => {
             setActive={setActive}
           />
         )}
-
         {active === 2 && (
           <CourseContent
             active={active}
@@ -179,7 +172,6 @@ const EditCourse: FC<Props> = ({ id }) => {
             handleSubmit={handleSubmit}
           />
         )}
-
         {active === 3 && (
           <CoursePreview
             active={active}
@@ -190,7 +182,7 @@ const EditCourse: FC<Props> = ({ id }) => {
           />
         )}
       </div>
-      <div className="w-[20%] mt-[100px] h-screen fixed z-[-1] top-18 right-0">
+      <div className="w-[20%] mt-[100px] h-full fixed top-0 right-0 dark:bg-slate-700 bg-white">
         <CourseOptions active={active} setActive={setActive} />
       </div>
     </div>

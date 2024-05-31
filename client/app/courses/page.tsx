@@ -16,29 +16,38 @@ const Page = (props: Props) => {
   const searchParams = useSearchParams();
   const search = searchParams?.get("title");
   const { data, isLoading } = useGetUsersAllCoursesQuery(undefined, {});
-  const { data: categoriesData } = useGetHeroDataQuery("Categories", {});
+  const { data: categoriesData } = useGetHeroDataQuery("categories", {});
   const [route, setRoute] = useState("Login");
   const [open, setOpen] = useState(false);
-  const [courses, setcourses] = useState([]);
+  const [courses, setCourses] = useState([]);
   const [category, setCategory] = useState("All");
 
   useEffect(() => {
-    if (category === "All") {
-      setcourses(data?.courses);
-    }
-    if (category !== "All") {
-      setcourses(
-        data?.courses.filter((item: any) => item.categories === category)
-      );
-    }
-    if (search) {
-      setcourses(
-        data?.courses.filter((item: any) =>
+    if (data?.courses && categoriesData?.layout?.categories) {
+      let filteredCourses = data.courses;
+
+      if (category !== "All") {
+        const selectedCategory = categoriesData.layout.categories.find(
+          (cat) => cat.title === category
+        );
+        const categoryId = selectedCategory ? selectedCategory._id : null;
+
+        if (categoryId) {
+          filteredCourses = filteredCourses.filter(
+            (item) => item.categories === categoryId
+          );
+        }
+      }
+
+      if (search) {
+        filteredCourses = filteredCourses.filter((item) =>
           item.name.toLowerCase().includes(search.toLowerCase())
-        )
-      );
+        );
+      }
+
+      setCourses(filteredCourses);
     }
-  }, [data, category, search]);
+  }, [data, categoriesData, category, search]);
 
   const categories = categoriesData?.layout?.categories;
 
@@ -57,18 +66,15 @@ const Page = (props: Props) => {
           />
           <div className="w-[95%] 800px:w-[85%] m-auto min-h-[70vh]">
             <Heading
-              title={"All courses - Elearning"}
-              description={"Elearning is a programming community."}
-              keywords={
-                "programming community, coding skills, expert insights, collaboration, growth"
-              }
+              title={"All courses - DAcademy"}
+              description="DAcademy is the first moroccan academy to learn and get help from teachers"
+              keywords="Diagnostic, Cars, Mercedes, OFPPT"
             />
             <br />
             <div className="w-full flex items-center flex-wrap">
               <div
-                className={`h-[35px] ${
-                  category === "All" ? "bg-[crimson]" : "bg-[#5050cb]"
-                } m-3 px-3 rounded-[30px] flex items-center justify-center font-Poppins cursor-pointer`}
+                className={`h-[35px] ${category === "All" ? "bg-orange-500" : "bg-teal-500"
+                  } m-3 px-3 rounded-[30px] flex items-center justify-center font-Poppins cursor-pointer`}
                 onClick={() => setCategory("All")}
               >
                 All
@@ -77,11 +83,10 @@ const Page = (props: Props) => {
                 categories.map((item: any, index: number) => (
                   <div key={index}>
                     <div
-                      className={`h-[35px] ${
-                        category === item.title
-                          ? "bg-[crimson]"
-                          : "bg-[#5050cb]"
-                      } m-3 px-3 rounded-[30px] flex items-center justify-center font-Poppins cursor-pointer`}
+                      className={`h-[35px] ${category === item.title
+                          ? "bg-orange-500"
+                          : "bg-teal-500"
+                        } m-3 px-3 rounded-[30px] flex items-center justify-center font-Poppins cursor-pointer`}
                       onClick={() => setCategory(item.title)}
                     >
                       {item.title}
@@ -90,11 +95,11 @@ const Page = (props: Props) => {
                 ))}
             </div>
             {
-                courses && courses.length === 0 && (
-                    <p className={`${styles.label} justify-center min-h-[50vh] flex items-center`}>
-                    {search ? "No courses found!" : "No courses found in this category. Please try another one!"}
-                  </p>
-                )
+              courses && courses.length === 0 && (
+                <p className={`${styles.label} justify-center min-h-[50vh] flex items-center`}>
+                  {search ? "No courses found!" : "No courses found in this category. Please try another one!"}
+                </p>
+              )
             }
             <br />
             <br />

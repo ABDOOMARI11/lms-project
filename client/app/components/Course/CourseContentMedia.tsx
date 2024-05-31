@@ -156,10 +156,11 @@ const CourseContentMedia = ({
       courseRefetch();
     }
     if (replyError) {
-      if ("data" in replyError) {
-        const errorMessage = error as any;
-        toast.error(errorMessage.data.message);
-      }
+      console.log(data);
+      // if ("data" in replyError) {
+      //   const errorMessage = error as any;
+      //   toast.error(errorMessage.data.message);
+      // }
     }
   }, [
     isSuccess,

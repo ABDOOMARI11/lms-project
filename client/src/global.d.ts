@@ -1,0 +1,4 @@
+interface Window {
+    paypal: any;
+  }
+  

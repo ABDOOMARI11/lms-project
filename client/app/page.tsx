@@ -6,6 +6,7 @@ import Hero from "./components/Route/Hero";
 import  Footer from "./components/Footer";
 import Courses from "./components/Route/Courses";
 import FAQ from "./components/FAQ/FAQ";
+import Reviews from "./components/Route/Reviews";
 
 interface Props {}
 
@@ -17,6 +18,7 @@ const Page: FC<Props> = () => {
   return (
     <>
     <div className="dark:bg-slate-700">
+      
       <Heading
         title="DAcademy"
         description="DAcademy is the first moroccan academy to learn and get help from teachers"
@@ -31,6 +33,8 @@ const Page: FC<Props> = () => {
       />
       <Hero />
       <Courses/>
+      <Reviews />
+
       <FAQ />
 
       <Footer />

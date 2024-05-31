@@ -11,7 +11,7 @@ const page = ({params}:any) => {
     const id = params?.id;
 
   return (
-    <div>
+    <div className=''>
         <Heading
         title="DAcademy-Admin"
         description="DAcademy is the first moroccan academy to learn and get help from teachers"

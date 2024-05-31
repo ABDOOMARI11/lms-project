@@ -29,7 +29,9 @@ const About = () => {
           <br />
           <strong>Amin El Joulali</strong> - Founder of DAcademy 🇲🇦
           <br />
-          <strong>Abdelmoughith EL AOUMARI</strong> - Developer at DAcademy 🇲🇦
+          <br />
+          Developed by - <strong>Abdelmoughith EL AOUMARI</strong> 
+           
         </p>
         <br />
         <br />

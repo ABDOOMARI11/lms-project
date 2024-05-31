@@ -92,14 +92,14 @@ const DashboardWidgets: FC<Props> = ({ open }) => {
   }, [isLoading, ordersLoading, data, ordersData]);
 
   return (
-    <div className="mt-[30px] min-h-screen">
+    <div className="mt-[30px] min-h-screen dark:bg-slate-700">
       <div className="grid grid-cols-[75%,25%]">
         <div className="p-8 ">
           <UserAnalytics isDashboard={true} />
         </div>
 
         <div className="pt-[80px] pr-8">
-          <div className="w-full dark:bg-slate-700 rounded-sm shadow">
+          <div className="w-full dark:bg-slate-700 rounded-sm shadow dark:text-white text-black">
             <div className="flex items-center p-5 justify-between">
               <div className="">
                 <BiBorderLeft className="dark:text-orange-500 text-[#000] text-[30px]" />
@@ -127,9 +127,9 @@ const DashboardWidgets: FC<Props> = ({ open }) => {
             </div>
           </div>
 
-          <div className="w-full dark:bg-slate-700 rounded-sm shadow my-8">
+          <div className="w-full dark:bg-slate-700 rounded-sm shadow my-8 ">
             <div className="flex items-center p-5 justify-between">
-              <div className="">
+              <div className="dark:text-white text-black">
                 <PiUsersFourLight className="dark:text-orange-500 text-[#000] text-[30px]" />
                 <h5 className="pt-2 font-Poppins dark:text-[#fff] text-black text-[20px]">
                   {userComparePercentage?.currentMonth}
@@ -144,7 +144,7 @@ const DashboardWidgets: FC<Props> = ({ open }) => {
                   ? 100 
                   : 0
                 } open={open} />
-                <h5 className="text-center pt-4">
+                <h5 className="text-center pt-4 dark:text-white text-black">
                   {userComparePercentage?.percentChange > 0
                     ? "+" + userComparePercentage?.percentChange.toFixed(2) 
                     : "-" + userComparePercentage?.percentChange.toFixed(2)} %

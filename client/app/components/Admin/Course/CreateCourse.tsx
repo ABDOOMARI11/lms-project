@@ -64,16 +64,13 @@ const CreateCourse = (props: Props) => {
 
 
   const handleSubmit = async () => {
-    // Format benefits array
     const formattedBenefits = benefits.map((benefit) => ({
       title: benefit.title,
     }));
-    // Format prerequisites array
     const formattedPrerequisites = prerequisites.map((prerequisite) => ({
       title: prerequisite.title,
     }));
 
-    // Format course content array
     const formattedCourseContentData = courseContentData.map(
       (courseContent) => ({
         videoUrl: courseContent.videoUrl,
@@ -89,7 +86,6 @@ const CreateCourse = (props: Props) => {
       })
     );
 
-    //   prepare our data object
     const data = {
       name: courseInfo.name,
       description: courseInfo.description,
@@ -116,7 +112,7 @@ const CreateCourse = (props: Props) => {
   };
 
   return (
-    <div className="w-full flex min-h-screen">
+    <div className="w-full flex min-h-screen dark:bg-slate-700">
       <div className="w-[80%]">
         {active === 0 && (
           <CourseInformation

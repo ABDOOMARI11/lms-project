@@ -14,7 +14,7 @@ import {
   sendToken,
 } from "../Utils/jwt";
 import { redis } from "../Utils/redis";
-import { getAllUsers, getUserById } from "../services/user.ser";
+import { getAllUsers, getUserById,updateUserRoleService } from "../services/user.ser";
 import bcrypt from "bcryptjs";
 import { json } from "stream/consumers";
 
@@ -469,20 +469,17 @@ export const getAllUsersForAdmin = CatchAsyncError(
 export const updateUserRole = CatchAsyncError(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { id, role } = req.body;
-      const user = await userModel.findById(id);
-
-      if (!user) {
-        return next(new ErrorHandler("Utilisateur non trouvé", 404));
+      const { email, role } = req.body;
+      const isUserExist = await userModel.findOne({ email });
+      if (isUserExist) {
+        const id = isUserExist._id;
+        updateUserRoleService(res,id, role);
+      } else {
+        res.status(400).json({
+          success: false,
+          message: "User not found",
+        });
       }
-
-      user.role = role;
-      await user.save();
-
-      res.status(200).json({
-        success: true,
-        user,
-      });
     } catch (error: any) {
       return next(new ErrorHandler(error.message, 400));
     }

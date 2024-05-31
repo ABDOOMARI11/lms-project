@@ -35,7 +35,7 @@ const CoursePreview: FC<Props> = ({
   };
 
   return (
-    <div className="w-[90%] m-auto py-5 mb-5">
+    <div className="w-[90%] m-auto py-5 mb-5 dark:text-white text-black">
       <div className="w-full relative">
         <div className="w-full mt-10">
           <CoursePlayer
@@ -78,10 +78,7 @@ const CoursePreview: FC<Props> = ({
             Apply
           </div>
         </div>
-        <p className="pb-1">• Source code included</p>
-        <p className="pb-1">• Full lifetime access</p>
-        <p className="pb-1">• Certificate of completion</p>
-        <p className="pb-3 800px:pb-1">• Premium Support</p>
+       
       </div>
       <div className="w-full">
         <div className="w-full 800px:pr-5">

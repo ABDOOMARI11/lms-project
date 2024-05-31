@@ -12,7 +12,7 @@ import { toast } from "react-hot-toast";
 type Props = {};
 
 const EditCategories = (props: Props) => {
-  const { data, isLoading,refetch } = useGetHeroDataQuery("Categories", {
+  const { data, isLoading, refetch } = useGetHeroDataQuery("categories", {
     refetchOnMountOrArgChange: true,
   });
   const [editLayout, { isSuccess: layoutSuccess, error }] =
@@ -24,7 +24,7 @@ const EditCategories = (props: Props) => {
       setCategories(data.layout.categories);
     }
     if (layoutSuccess) {
-        refetch();
+      refetch();
       toast.success("Categories updated successfully");
     }
 
@@ -34,7 +34,7 @@ const EditCategories = (props: Props) => {
         toast.error(errorData?.data?.message);
       }
     }
-  }, [data, layoutSuccess, error,refetch]);
+  }, [data, layoutSuccess, error, refetch]);
 
   const handleCategoriesAdd = (id: any, value: string) => {
     setCategories((prevCategory: any) =>
@@ -67,7 +67,7 @@ const EditCategories = (props: Props) => {
       !isAnyCategoryTitleEmpty(categories)
     ) {
       await editLayout({
-        type: "Categories",
+        type: "categories",
         categories,
       });
     }
@@ -114,19 +114,17 @@ const EditCategories = (props: Props) => {
             />
           </div>
           <div
-            className={`${
-              styles.button
-            } !w-[100px] !min-h-[40px] !h-[40px] dark:text-white text-black bg-[#cccccc34] 
-            ${
-              areCategoriesUnchanged(data.layout.categories, categories) ||
-              isAnyCategoryTitleEmpty(categories)
+            className={`${styles.button
+              } !w-[100px] !min-h-[40px] !h-[40px] dark:text-white text-black bg-[#cccccc34] 
+            ${areCategoriesUnchanged(data.layout.categories, categories) ||
+                isAnyCategoryTitleEmpty(categories)
                 ? "!cursor-not-allowed"
                 : "!cursor-pointer !bg-[#42d383]"
-            }
+              }
             !rounded absolute bottom-12 right-12`}
             onClick={
               areCategoriesUnchanged(data.layout.categories, categories) ||
-              isAnyCategoryTitleEmpty(categories)
+                isAnyCategoryTitleEmpty(categories)
                 ? () => null
                 : editCategoriesHandler
             }

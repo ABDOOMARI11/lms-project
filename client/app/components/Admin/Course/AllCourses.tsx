@@ -96,7 +96,7 @@ const AllCourses = (props: Props) => {
         toast.error(errorMessage.data.message);
       }
     }
-  }, [isSuccess, error,refetch]);
+  }, [isSuccess, error, refetch]);
 
   const handleDelete = async () => {
     const id = courseId;

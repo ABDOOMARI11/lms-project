@@ -118,7 +118,6 @@ const AdminSidebar = () => {
         }}
       >
         <Menu>
-          {/* LOGO AND MENU ICON */}
           <MenuItem
             onClick={() => setIsCollapsed(!isCollapsed)}
             icon={isCollapsed ? <ArrowForwardIosIcon /> : undefined}
@@ -246,13 +245,6 @@ const AdminSidebar = () => {
             >
               {!isCollapsed && "Customization"}
             </Typography>
-            <Item
-              title="Hero"
-              to="/admin/hero"
-              icon={<WebIcon className="text-black dark:text-white" />}
-              selected={selected}
-              setSelected={setSelected}
-            />
             <Item
               title="FAQ"
               to="/admin/faq"

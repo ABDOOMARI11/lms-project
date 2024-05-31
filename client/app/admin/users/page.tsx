@@ -21,9 +21,11 @@ const page = (props: Props) => {
           <div className="1500px:w-[16%] w-1/5">
             <AdminSidebar />
           </div>
-          <div className="w-[85%]">
+          <div className="w-[85%] dark:bg-slate-700">
             <DashboardHero />
+            <div className='dark:bg-slate-700'>
             <AllUsers />
+            </div>
           </div>
         </div>
       </AdminProtected>

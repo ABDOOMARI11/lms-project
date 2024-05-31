@@ -15,7 +15,7 @@ interface BannerImage extends Document {
 
 interface ILayout extends Document {
   type: string;
-  FAQ: FaqItem[];
+  FAQ?: FaqItem[];
   categories: Category[];
   Banner: {
     image: BannerImage;

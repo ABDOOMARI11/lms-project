@@ -16,14 +16,15 @@ const CourseInformation: FC<Props> = ({
   setActive,
 }) => {
   const [dragging, setDragging] = useState(false);
-  const { data } = useGetHeroDataQuery("Categories", {});
+  const { data, error, isLoading } = useGetHeroDataQuery("categories", {});
   const [categories, setCategories] = useState([]);
 
   useEffect(() => {
+
     if (data) {
-      setCategories(data.layout?.categories);
+      setCategories(data?.layout?.categories || []);
     }
-  }, [data]);
+  }, [data, error, isLoading]);
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
@@ -69,9 +70,8 @@ const CourseInformation: FC<Props> = ({
       reader.readAsDataURL(file);
     }
   };
-
   return (
-    <div className="w-[80%] m-auto mt-24 dark:bg-slate-700">
+    <div className="w-[80%] m-auto mt-24 bg-tra">
       <form onSubmit={handleSubmit} className={`${styles.label}`}>
         <div>
           <label htmlFor="">Course Name</label>
@@ -168,19 +168,24 @@ const CourseInformation: FC<Props> = ({
             <select
               name=""
               id=""
-              className={`${styles.input}`}
-              value={courseInfo.category}
+              className={`${styles.input} bg-transparent`}
+              value={courseInfo.categoriesData}
               onChange={(e: any) =>
                 setCourseInfo({ ...courseInfo, categories: e.target.value })
               }
             >
-              <option value="">Select Category</option>
-              {categories &&
+              <option value="" className="dark:text-black">Select Category</option>
+              {categories && categories.length > 0 ? (
                 categories.map((item: any) => (
-                  <option value={item.title} key={item._id}>
+                  <option value={item._id} key={item._id} className="dark:text-black text-black bg-transparent">
                     {item.title}
                   </option>
-                ))}
+                ))
+              ) : (
+                <option value="" disabled>
+                  No categories available
+                </option>
+              )}
             </select>
           </div>
         </div>
@@ -230,9 +235,8 @@ const CourseInformation: FC<Props> = ({
           />
           <label
             htmlFor="file"
-            className={`w-full min-h-[10vh] dark:border-white border-[#00000026] p-3 border flex items-center justify-center ${
-              dragging ? "bg-blue-500" : "bg-transparent"
-            }`}
+            className={`w-full min-h-[10vh]  p-3 border flex items-center justify-center border-orange-500 ${dragging ? "bg-blue-500" : "bg-transparent"
+              }`}
             onDragOver={handleDragOver}
             onDragLeave={handleDragLeave}
             onDrop={handleDrop}

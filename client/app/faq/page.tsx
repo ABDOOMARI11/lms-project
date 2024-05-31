@@ -13,11 +13,11 @@ const Page = (props: Props) => {
   const [route, setRoute] = useState("Login");
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen  dark:bg-slate-700">
       <Heading
-        title="FAQ - Elearning"
-        description="Elearning is a learning management system for helping programmers."
-        keywords="programming,mern"
+        title="FAQ - DAcademy"
+        description="DAcademy is the first moroccan academy to learn and get help from teachers"
+        keywords="Diagnostic, Cars, Mercedes, OFPPT"
       />
       <Header
         open={open}
@@ -28,6 +28,12 @@ const Page = (props: Props) => {
       />
       <br />
       <FAQ />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+ 
       <Footer />
     </div>
   );
