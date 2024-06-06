@@ -11,13 +11,14 @@ import CheckOutForm from "../Payment/CheckOutForm";
 import { useLoadUserQuery } from "@/redux/features/api/apiSlice";
 import Image from "next/image";
 import { VscVerifiedFilled } from "react-icons/vsc";
-
+import { FaCreditCard, FaMoneyBill } from 'react-icons/fa';
 type Props = {
   data: any;
   stripePromise: any;
   clientSecret: string;
   setRoute: any;
   setOpen: any;
+
 };
 
 const CourseDetails = ({
@@ -30,6 +31,7 @@ const CourseDetails = ({
   const { data: userData, refetch } = useLoadUserQuery(undefined, {});
   const [user, setUser] = useState<any>();
   const [open, setOpen] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState<'stripe' | 'bank' | null>(null);
 
   useEffect(() => {
     setUser(userData?.user);
@@ -48,8 +50,6 @@ const CourseDetails = ({
       openAuthModal(true);
     }
   };
-  
-
 
   return (
     <div className="w-[90%] 800px:w-[90%] m-auto py-5">
@@ -205,18 +205,28 @@ const CourseDetails = ({
               <h1 className="pt-5 text-[25px] text-black dark:text-white">
                 {data?.price === 0 ? "Free" : data?.price + " MAD"}
               </h1>
+              {data?.price < data?.estimatedPrice && (
+                <div className="pl-5 flex items-center">
+                  <h4 className="line-through text-[16px] text-black dark:text-white">
+                    {data?.estimatedPrice} MAD
+                  </h4>
+                  <h4 className="text-[16px] text-[#32a852]">
+                    {discountPercentagePrice}% OFF
+                  </h4>
+                </div>
+              )}
             </div>
             <div className="flex items-center">
               {isPurchased ? (
                 <Link
-                  className={`${styles.button} !w-[180px] my-3 font-Poppins cursor-pointer !bg-[crimson]`}
+                  className={`${styles.button} !w-[180px] my-3 font-Poppins cursor-pointer !bg-orange-500 dark:text-white`}
                   href={`/course-access/${data._id}`}
                 >
                   Enter to Course
                 </Link>
               ) : (
                 <div
-                  className={`${styles.button} !w-[195px] my-3 font-Poppins cursor-pointer !bg-[crimson]`}
+                  className={`${styles.button} !w-[195px] my-3 font-Poppins cursor-pointer !bg-orange-500 dark:text-white`}
                   onClick={handleOrder}
                 >
                   Buy Now {data?.price} MAD
@@ -229,8 +239,8 @@ const CourseDetails = ({
       </div>
       <>
         {open && (
-          <div className="w-full h-screen bg-[#00000036] fixed top-0 left-0 z-50 flex items-center justify-center">
-            <div className="w-[500px] min-h-[500px] bg-white rounded-xl shadow p-3">
+          <div className="w-full h-screen bg-[#00000036] fixed top-0 left-0 z-50 flex items-center justify-center ">
+            <div className="w-[500px] min-h-[500px] bg-white rounded-xl shadow p-3 dark:bg-slate-700">
               <div className="w-full flex justify-end">
                 <IoCloseOutline
                   size={40}
@@ -238,13 +248,90 @@ const CourseDetails = ({
                   onClick={() => setOpen(false)}
                 />
               </div>
-              <div className="w-full">
-                {stripePromise && clientSecret && (
+              {!paymentMethod && (
+                <div className="w-full flex flex-col items-center ">
+                  <h2 className="text-[20px] font-Poppins font-[600] text-black dark:text-white  mb-5">
+                    Choose Payment Method
+                  </h2>
+                  <h2 className="text-[20px] font-Poppins font-[500] text-black dark:text-white  mb-5">
+                    pay by
+                  </h2>
+                  <br />
+                  <br />
+                  <br />
+                  <div className="flex flex-col items-center">
+                    <button
+                      className={`${styles.button} flex items-center justify-center !w-[200px] my-3 font-Poppins cursor-pointer !bg-slate-800 pr-5`}
+                      onClick={() => setPaymentMethod('stripe')}
+                    >
+                      <FaCreditCard size={25} className="text-white" />
+                      <span className="mr-1">   </span> {/* Ajout d'un petit espace */}
+                      <span className="text-white ">Card</span>
+                    </button>
+                    <button
+                      className={`${styles.button} flex items-center justify-center !w-[200px] my-3 font-Poppins cursor-pointer !bg-orange-500 pr-5`}
+                      onClick={() => setPaymentMethod('bank')}
+                    >
+                      <FaMoneyBill size={20} className="text-white" />
+                      <span className="mr-1">   </span> {/* Ajout d'un petit espace */}
+                      <span className="text-white ">Bank Transfer</span>
+                    </button>
+
+                  </div>
+                </div>
+              )}
+              {paymentMethod === 'stripe' && stripePromise && clientSecret && (
+                <Elements stripe={stripePromise} options={{ clientSecret }}>
                   <Elements stripe={stripePromise} options={{ clientSecret }}>
-                    <CheckOutForm setOpen={setOpen} data={data} user={user} refetch={refetch} />
+                    <CheckOutForm
+                      setOpen={setOpen}
+                      data={data}
+                      user={user}
+                      refetch={refetch}
+                      setPaymentMethod={setPaymentMethod} // Utilisez setPaymentMethod directement
+                    />
                   </Elements>
-                )}
-              </div>
+
+                </Elements>
+              )}
+              {paymentMethod === 'bank' && (
+                <div className="w-full flex flex-col items-center">
+                  <Image
+                    src="/assests/logo.png"
+                    alt="CIH Bank Logo"
+                    width={100}
+                    height={100}
+                    className="mb-5"
+                  />
+                  <h2 className="text-[20px] font-Poppins font-[600] text-black dark:text-white mb-5">
+                    Bank Transfer Details
+                  </h2>
+                  <p className="text-[18px] text-black dark:text-white">Account Number: 4 2302 0139en</p>
+                  <p className="text-[18px] text-black dark:text-white">RIB: 230 201 3999444211030700 06</p>
+                  <ol className="list-decimal list-inside text-[16px] text-black dark:text-white mt-2">
+                      <li>Transfer <strong>{data?.price} MAD</strong> to the above account.</li>
+                      <li>Contact support with your payment details.</li>
+                      <li>Send the payment receipt to <strong className="text-[14px] text-orange-500">dacademy.sup1@gmail.com</strong>.</li>
+                    </ol>
+                  <br />
+                  <br />
+                  <br />
+                  <div className="flex justify-between w-full px-5">
+                    <button
+                      className={`${styles.button} !w-[200px] my-3 font-Poppins cursor-pointer !bg-slate-800 text-white`}
+                      onClick={() => setPaymentMethod(null)}
+                    >
+                      Go Back
+                    </button>
+                    <button
+                      className={`${styles.button} !w-[200px] my-3 font-Poppins cursor-pointer !bg-orange-500 text-white`}
+                      onClick={() => setOpen(false)}
+                    >
+                      Close
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         )}
