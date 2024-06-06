@@ -1,4 +1,3 @@
-"use client";
 import React, { useEffect, useState } from "react";
 import CourseInformation from "./CourseInformation";
 import CourseOptions from "./CourseOptions";
@@ -12,8 +11,7 @@ import { redirect } from "next/navigation";
 type Props = {};
 
 const CreateCourse = (props: Props) => {
-  const [createCourse, { isLoading, isSuccess, error }] =
-    useCreateCourseMutation();
+  const [createCourse, { isLoading, isSuccess, error }] = useCreateCourseMutation();
 
   useEffect(() => {
     if (isSuccess) {
@@ -36,7 +34,7 @@ const CreateCourse = (props: Props) => {
     estimatedPrice: "",
     tags: "",
     level: "",
-    categories:"",
+    categories: "",
     demoUrl: "",
     thumbnail: "",
   });
@@ -59,9 +57,7 @@ const CreateCourse = (props: Props) => {
     },
   ]);
 
-
   const [courseData, setCourseData] = useState({});
-
 
   const handleSubmit = async () => {
     const formattedBenefits = benefits.map((benefit) => ({

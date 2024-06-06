@@ -53,6 +53,7 @@ const DashboardHeader: FC<Props> = ({ open, setOpen }) => {
 
   const handleNotificationStatusChange = async (id: string) => {
     await updateNotificationStatus(id);
+    window.location.reload();
   };
 
   return (

@@ -1,11 +1,13 @@
 import React, { FC, useEffect, useState } from "react";
+import Plyr from "plyr";
+import "plyr/dist/plyr.css";
 
 type Props = {
-  videoUrl: string; 
+  videoUrl: string;
 };
 
 const CoursePlayer: FC<Props> = ({ videoUrl }) => {
-  const [videoId, setVideoId] = useState<string>(""); 
+  const [videoId, setVideoId] = useState<string>("");
 
   useEffect(() => {
     const getVideoIdFromUrl = (url: string) => {
@@ -18,22 +20,22 @@ const CoursePlayer: FC<Props> = ({ videoUrl }) => {
     setVideoId(id);
   }, [videoUrl]);
 
+  useEffect(() => {
+    if (videoId) {
+      const player = new Plyr(`#player`);
+    }
+  }, [videoId]);
+
   return (
-    <div style={{ position: "relative", paddingTop: "56.25%", overflow: "hidden" }} >
-      {videoId && ( 
-        <iframe
-          src={`https://www.youtube.com/embed/${videoId}`}
-          style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            width: "100%",
-            height: "100%",
-            border: 0,
-          }}
-          className="border-orange-500"
-          allowFullScreen
-        ></iframe>
+    <div style={{ position: "relative",overflow: "hidden" }}>
+      {videoId && (
+        <div
+          id="player"
+          data-plyr-provider="youtube"
+          data-plyr-embed-id={videoId}
+          style={{ pointerEvents: "none" }} // This line prevents right-click on the iframe
+          onContextMenu={(e) => e.preventDefault()} // Disable right-click context menu
+        ></div>
       )}
     </div>
   );

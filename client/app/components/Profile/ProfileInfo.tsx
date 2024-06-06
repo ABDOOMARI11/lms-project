@@ -69,7 +69,7 @@ const ProfileInfo: FC<Props> = ({ avatar, user }) => {
             alt=""
             width={120}
             height={120}
-            className="w-[120px] h-[120px] cursor-pointer border-[3px] border-[#37a39a] rounded-full"
+            className="w-[120px] h-[120px] cursor-pointer border-[3px] border-[#ffa500] rounded-full"
           />
           <input
             type="file"
@@ -81,7 +81,7 @@ const ProfileInfo: FC<Props> = ({ avatar, user }) => {
           />
           <label htmlFor="avatar">
             <div className="w-[30px] h-[30px] bg-slate-900 rounded-full absolute bottom-2 right-2 flex items-center justify-center cursor-pointer">
-              <AiOutlineCamera size={20} className="z-1" />
+              <AiOutlineCamera size={20} className="z-1 text-white" />
             </div>
           </label>
         </div>

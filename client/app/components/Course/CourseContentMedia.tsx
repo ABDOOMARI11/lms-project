@@ -248,7 +248,7 @@ const CourseContentMedia = ({
             key={index}
             className={`800px:text-[20px] cursor-pointer ${
               activeBar === index
-                ? "text-red-500"
+                ? "text-orange-500"
                 : "dark:text-white text-black"
             }`}
             onClick={() => setactiveBar(index)}
@@ -357,7 +357,7 @@ const CourseContentMedia = ({
                   />
                   <div className="w-full">
                     <h5 className="pl-3 text-[20px] font-[500] dark:text-white text-black ">
-                      Give a Rating <span className="text-red-500">*</span>
+                      Give a Rating <span className="text-orange-500">*</span>
                     </h5>
                     <div className="flex w-full ml-2 pb-3">
                       {[1, 2, 3, 4, 5].map((i) =>
