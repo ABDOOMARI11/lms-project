@@ -41,14 +41,6 @@ const Footer = (props: Props) => {
               </li>
               <li>
                 <Link
-                  href="/privacy-policy"
-                  className="text-base text-black dark:text-gray-300 dark:hover:text-white"
-                >
-                  Privacy Policy
-                </Link>
-              </li>
-              <li>
-                <Link
                   href="/faq"
                   className="text-base text-black dark:text-gray-300 dark:hover:text-white"
                 >
@@ -76,14 +68,7 @@ const Footer = (props: Props) => {
                   My Account
                 </Link>
               </li>
-              <li>
-                <Link
-                  href="/course-dashboard"
-                  className="text-base text-black dark:text-gray-300 dark:hover:text-white"
-                >
-                  Course Dashboard
-                </Link>
-              </li>
+             
             </ul>
           </div>
           <div className="space-y-3">

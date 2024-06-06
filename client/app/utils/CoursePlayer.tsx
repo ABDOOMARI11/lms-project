@@ -10,7 +10,7 @@ const CoursePlayer: FC<Props> = ({ videoUrl }) => {
   useEffect(() => {
     const getVideoIdFromUrl = (url: string) => {
       const videoIdRegex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
-      const match = url.match(videoIdRegex);
+      const match = url?.match(videoIdRegex);
       return match ? match[1] : "";
     };
 

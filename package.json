@@ -2,5 +2,8 @@
   "dependencies": {
     "@stripe/react-stripe-js": "^2.7.1",
     "@stripe/stripe-js": "^3.4.1"
+  },
+  "devDependencies": {
+    "@types/streamifier": "^0.1.2"
   }
 }

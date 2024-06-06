@@ -103,13 +103,13 @@ const AllInvoices = ({ isDashboard }: Props) => {
                 outline: "none",
               },
               "& .css-pqjvzy-MuiSvgIcon-root-MuiSelect-icon": {
-                color: theme === "dark" ? "#ff8000 " : "#000",
+                color: theme === "dark" ? "#ffffff " : "#000",
               },
               "& .MuiDataGrid-sortIcon": {
-                color: theme === "dark" ? "#ff8000 " : "#000",
+                color: theme === "dark" ? "#ffffff " : "#000",
               },
               "& .MuiDataGrid-row": {
-                color: theme === "dark" ? "#ff8000 " : "#000",
+                color: theme === "dark" ? "#ffffff " : "#000",
                 borderBottom:
                   theme === "dark"
                     ? "1px solid #ffffff30!important"
@@ -122,12 +122,12 @@ const AllInvoices = ({ isDashboard }: Props) => {
                 borderBottom: "none!important",
               },
               "& .name-column--cell": {
-                color: theme === "dark" ? "#ff8000 " : "#000",
+                color: theme === "dark" ? "#ffffff " : "#000",
               },
               "& .MuiDataGrid-columnHeaders": {
                 backgroundColor: theme === "dark" ? "#a3a8a8" : "#A4A9FC",
                 borderBottom: "none",
-                color: theme === "dark" ? "#ff8000 " : "#000",
+                color: theme === "dark" ? "ffffff " : "#000",
               },
               "& .MuiDataGrid-virtualScroller": {
                 backgroundColor: theme === "dark" ? "#1F2A40" : "#E69C52 ",
@@ -142,7 +142,7 @@ const AllInvoices = ({ isDashboard }: Props) => {
                   theme === "dark" ? `#b7ebde !important` : `#000 !important`,
               },
               "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
-                color: `#ff8000  !important`,
+                color: `#ffffff  !important`,
               },
             }}
           >

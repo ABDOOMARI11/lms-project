@@ -15,7 +15,7 @@ const CourseOptions: FC<Props> = ({ active, setActive }) => {
   ];
 
   return (
-    <div className='dark:bg-slate-700 bg-white p-5'>
+    <div className=' bg-transparent p-5'>
       {options.map((option: any, index: number) => (
         <div key={index} className={`w-full flex py-5`}>
           <div

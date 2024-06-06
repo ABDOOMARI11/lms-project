@@ -35,7 +35,7 @@ const CourseDetails = ({
     setUser(userData?.user);
   }, [userData]);
 
-  const discountPercentage = ((data?.estimatedPrice - data.price) / data?.estimatedPrice) * 100;
+  const discountPercentage = ((data?.estimatedPrice - data?.price) / data?.estimatedPrice) * 100;
   const discountPercentagePrice = discountPercentage.toFixed(0);
 
   const isPurchased = user && user?.courses?.find((item: any) => item._id === data._id);
@@ -48,7 +48,6 @@ const CourseDetails = ({
       openAuthModal(true);
     }
   };
-  console.log(data.ratings);
   
 
 
@@ -57,17 +56,17 @@ const CourseDetails = ({
       <div className="w-full flex flex-col-reverse 800px:flex-row">
         <div className="w-full 800px:w-[65%] 800px:pr-5">
           <h1 className="text-[25px] font-Poppins font-[600] text-black dark:text-white">
-            {data.name}
+            {data?.name}
           </h1>
           <div className="flex items-center justify-between pt-3">
             <div className="flex items-center">
-              <Ratings rating={data.ratings} />
+              <Ratings rating={data?.ratings} />
               <h5 className="text-black dark:text-white">
-                {data.reviews?.length} Reviews
+                {data?.reviews?.length} Reviews
               </h5>
             </div>
             <h5 className="text-black dark:text-white">
-              {data.purchased} Students
+              {data?.purchased} Students
             </h5>
           </div>
           <br />
@@ -75,12 +74,12 @@ const CourseDetails = ({
             What you will learn from this course?
           </h1>
           <div>
-            {data.benefits?.map((item: any, index: number) => (
+            {data?.benefits?.map((item: any, index: number) => (
               <div className="w-full flex 800px:items-center py-2" key={index}>
                 <div className="w-[15px] mr-1">
                   <IoCheckmarkDoneOutline size={20} className="text-black dark:text-white" />
                 </div>
-                <p className="pl-2 text-black dark:text-white">{item.title}</p>
+                <p className="pl-2 text-black dark:text-white">{item?.title}</p>
               </div>
             ))}
             <br />
@@ -89,12 +88,12 @@ const CourseDetails = ({
           <h1 className="text-[25px] font-Poppins font-[600] text-black dark:text-white">
             What are the prerequisites for starting this course?
           </h1>
-          {data.prerequisites?.map((item: any, index: number) => (
+          {data?.prerequisites?.map((item: any, index: number) => (
             <div className="w-full flex 800px:items-center py-2" key={index}>
               <div className="w-[15px] mr-1">
                 <IoCheckmarkDoneOutline size={20} className="text-black dark:text-white" />
               </div>
-              <p className="pl-2 text-black dark:text-white">{item.title}</p>
+              <p className="pl-2 text-black dark:text-white">{item?.title}</p>
             </div>
           ))}
           <br />
@@ -113,7 +112,7 @@ const CourseDetails = ({
               Course Details
             </h1>
             <p className="text-[18px] mt-[20px] whitespace-pre-line w-full overflow-hidden text-black dark:text-white">
-              {data.description}
+              {data?.description}
             </p>
           </div>
           <br />
@@ -131,7 +130,7 @@ const CourseDetails = ({
             </div>
             <br />
             {/* Displaying reviews */}
-            {(data?.reviews && [...data.reviews].reverse()).map(
+            {(data?.reviews && [...data?.reviews].reverse())?.map(
               (item: any, index: number) => (
                 <div className="w-full pb-4" key={index}>
                   <div className="flex">
@@ -204,7 +203,7 @@ const CourseDetails = ({
             <CoursePlayer videoUrl={data?.demoUrl} />
             <div className="flex items-center">
               <h1 className="pt-5 text-[25px] text-black dark:text-white">
-                {data.price === 0 ? "Free" : data.price + " MAD"}
+                {data?.price === 0 ? "Free" : data?.price + " MAD"}
               </h1>
             </div>
             <div className="flex items-center">
@@ -220,7 +219,7 @@ const CourseDetails = ({
                   className={`${styles.button} !w-[195px] my-3 font-Poppins cursor-pointer !bg-[crimson]`}
                   onClick={handleOrder}
                 >
-                  Buy Now {data.price} MAD
+                  Buy Now {data?.price} MAD
                 </div>
               )}
             </div>

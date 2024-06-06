@@ -35,15 +35,14 @@ const CourseInformation: FC<Props> = ({
     const file = e.target.files?.[0];
     if (file) {
       const reader = new FileReader();
-
-      reader.onload = (e: any) => {
-        if (reader.readyState === 2) {
-          setCourseInfo({ ...courseInfo, thumbnail: reader.result });
-        }
+  
+      reader.onloadend = () => {
+        setCourseInfo({ ...courseInfo, thumbnail: reader.result });
       };
       reader.readAsDataURL(file);
     }
   };
+  
 
   const handleDragOver = (e: any) => {
     e.preventDefault();
@@ -118,7 +117,7 @@ const CourseInformation: FC<Props> = ({
                 setCourseInfo({ ...courseInfo, price: e.target.value })
               }
               id="price"
-              placeholder="29"
+              placeholder="100"
               className={`
             ${styles.input}`}
             />
@@ -135,7 +134,7 @@ const CourseInformation: FC<Props> = ({
                 setCourseInfo({ ...courseInfo, estimatedPrice: e.target.value })
               }
               id="price"
-              placeholder="79"
+              placeholder="300"
               className={`
             ${styles.input}`}
             />
@@ -156,7 +155,7 @@ const CourseInformation: FC<Props> = ({
                 setCourseInfo({ ...courseInfo, tags: e.target.value })
               }
               id="tags"
-              placeholder="MERN,Next 13,Socket io,tailwind css,LMS"
+              placeholder="Cars,OFPPT,Automative mechanic,Electric systems"
               className={`
             ${styles.input}`}
             />
@@ -192,21 +191,22 @@ const CourseInformation: FC<Props> = ({
         <br />
         <div className="w-full flex justify-between">
           <div className="w-[45%]">
-            <label className={`${styles.label}`}>Course Level</label>
-            <input
-              type="text"
-              name=""
-              value={courseInfo.level}
-              required
-              onChange={(e: any) =>
-                setCourseInfo({ ...courseInfo, level: e.target.value })
-              }
+            <label className={`${styles.label}`} htmlFor="level">Course Level</label>
+            <select
+              name="level"
               id="level"
-              placeholder="Beginner/Intermediate/Expert"
-              className={`
-            ${styles.input}`}
-            />
+              value={courseInfo.level}
+              onChange={(e) => setCourseInfo({ ...courseInfo, level: e.target.value })}
+              className={`${styles.input} dark:text-black text-black bg-transparent` }
+              required
+            >
+              <option value=""  className="dark:text-black"disabled>Select Level</option>
+              <option value="Beginner" className="dark:text-black">Beginner</option>
+              <option value="Intermediate" className="dark:text-black">Intermediate</option>
+              <option value="Advanced" className="dark:text-black">Advanced</option>
+            </select>
           </div>
+
           <div className="w-[50%]">
             <label className={`${styles.label} w-[50%]`}>Demo Url</label>
             <input

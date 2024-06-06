@@ -118,7 +118,7 @@ export const editLayout = CatchAsyncError(
 );
 
 
-// Get layout by type
+                           
 export const getLayoutByType = CatchAsyncError(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -128,7 +128,7 @@ export const getLayoutByType = CatchAsyncError(
         return next(new ErrorHandler("Invalid type parameter", 400));
       }
 
-      console.log("Requested type:", type); // Ajout de log pour vérifier le type demandé
+      console.log("Requested type:", type); 
 
       const layout = await layoutModel.findOne({ type });
       
@@ -136,7 +136,7 @@ export const getLayoutByType = CatchAsyncError(
         return next(new ErrorHandler("Layout not found", 404));
       }
 
-      console.log("Fetched layout:", layout); // Ajout de log pour vérifier les données récupérées
+      console.log("Fetched layout:", layout); 
 
       res.status(200).json({
         success: true,

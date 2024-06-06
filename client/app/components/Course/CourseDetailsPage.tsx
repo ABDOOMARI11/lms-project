@@ -51,7 +51,7 @@ const CourseDetailsPage = ({ id }: Props) => {
       ) : (
         <div>
           <Heading
-            title={data.course.name + " - DAcademy"}
+            title={data?.course?.name + " - DAcademy"}
             description={
               "ELearning is a programming community which is developed by shahriar sajeeb for helping programmers"
             }
@@ -67,7 +67,7 @@ const CourseDetailsPage = ({ id }: Props) => {
           <div className="dark:bg-slate-700">
           {stripePromise && (
             <CourseDetails
-              data={data.course}
+              data={data?.course}
               stripePromise={stripePromise}
               clientSecret={clientSecret}
               setRoute={setRoute}

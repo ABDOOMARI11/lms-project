@@ -56,7 +56,7 @@ const CourseData: FC<Props> = ({
             type="text"
             key={index}
             name="Benefit"
-            placeholder="You will be able to build a full stack LMS Platform..."
+            placeholder="Learn from industry experts with extensive experience in automotive diagnostics, electrical systems, and vehicle electronics."
             required
             className={`${styles.input} my-2`}
             value={benefit.title}
@@ -78,7 +78,7 @@ const CourseData: FC<Props> = ({
             type="text"
             key={index}
             name="prerequisites"
-            placeholder="You need basic knowledge of MERN stack"
+            placeholder="A foundational knowledge of automotive mechanics and electrical systems is recommended."
             required
             className={`${styles.input} my-2`}
             value={prerequisites.title}
