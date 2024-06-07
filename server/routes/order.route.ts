@@ -1,6 +1,6 @@
 import express from "express";
 import { isAuthenticated,authorizeRoles } from "../middleware/auth";
-import { createOrder, getAllOrders,newPayment,sendStripePublishableKey } from "../controllers/order.controller";
+import { createOrder, getAllOrders,newPayment,sendStripePublishableKey,createManualOrder } from "../controllers/order.controller";
 import { updateAccesToken } from "../controllers/user.contoller";
 
 
@@ -21,4 +21,7 @@ orderRouter.get(
   orderRouter.get("/payment/stripepublishablekey", sendStripePublishableKey);
 
 orderRouter.post("/payment",updateAccesToken,isAuthenticated, newPayment);
+// orderRouter.js
+orderRouter.post("/create-manual-order", updateAccesToken, isAuthenticated, authorizeRoles("admin"), createManualOrder);
+
 export default orderRouter;

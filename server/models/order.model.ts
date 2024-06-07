@@ -8,11 +8,11 @@ export interface IOrder extends Document{
 const orderSchema = new Schema<IOrder>({
     courseId: {
         type:String,
-        required:true
+        // required:true
     },
     userId:{
         type:String,
-        required:true
+        // required:true
     },
     payment_info:{
         type: Object,

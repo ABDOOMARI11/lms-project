@@ -10,7 +10,7 @@ export interface INotification extends Document {
 const  notificatSchema = new  Schema<INotification> ({
      title:{
         type:String,
-        required:true
+      //   required:true
      },
      message:{
         type:String,

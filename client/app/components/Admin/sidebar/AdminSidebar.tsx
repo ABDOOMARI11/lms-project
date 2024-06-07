@@ -19,6 +19,7 @@ import {
   ManageHistoryIcon,
   SettingsIcon,
   ExitToAppIcon,
+  AddShoppingCartIcon
 } from "./Icon";
 import avatarDefault from "../../../../public/assests/avatar.png";
 import { useSelector } from "react-redux";
@@ -237,6 +238,14 @@ const AdminSidebar = () => {
               selected={selected}
               setSelected={setSelected}
             />
+            <Item
+              title="Create Order"
+              to="/admin/create-order"
+              icon={<AddShoppingCartIcon className="text-black dark:text-white" />} // Remplacez VideoCallIcon par AddShoppingCartIcon
+              selected={selected}
+              setSelected={setSelected}
+            />
+
 
             <Typography
               variant="h5"
@@ -331,7 +340,7 @@ const AdminSidebar = () => {
         </Menu>
       </Sidebar>
     </Box>
-    
+
   );
 };
 

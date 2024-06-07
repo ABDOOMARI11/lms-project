@@ -306,7 +306,7 @@ const CourseDetails = ({
                   <h2 className="text-[20px] font-Poppins font-[600] text-black dark:text-white mb-5">
                     Bank Transfer Details
                   </h2>
-                  <p className="text-[18px] text-black dark:text-white">Account Number: 4 2302 0139en</p>
+                  <p className="text-[18px] text-black dark:text-white">Account Number: 4 2302 0139</p>
                   <p className="text-[18px] text-black dark:text-white">RIB: 230 201 3999444211030700 06</p>
                   <ol className="list-decimal list-inside text-[16px] text-black dark:text-white mt-2">
                       <li>Transfer <strong>{data?.price} MAD</strong> to the above account.</li>
